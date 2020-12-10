@@ -26,8 +26,8 @@ public class Pawn extends Piece{
         return this.moved;
     }
 
-    public void setMoved() {
-        this.moved = 1;
+    public void setMoved(int status) {
+        this.moved = status;
     }
 
     public int getSpecialTurnNumber() {

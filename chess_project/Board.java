@@ -195,16 +195,16 @@ public class Board {
         Piece mover = this.move(move_positions.get(0), move_positions.get(1));
         if (mover instanceof Rook) {
             Rook rook  = (Rook) mover;
-            ((Rook) mover).setMoved();
+            ((Rook) mover).setMoved(1);
         }
         if (mover instanceof Pawn) {
             Pawn pawn  = (Pawn) mover;
-            ((Pawn) mover).setMoved();
+            ((Pawn) mover).setMoved(1);
             //System.out.println("pawn.moved: " + ((Pawn) mover).getMoved());
         }
         if (mover instanceof King) {
             King king  = (King) mover;
-            ((King) mover).setMoved();
+            ((King) mover).setMoved(1);
 
         }
 
