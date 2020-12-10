@@ -6,6 +6,7 @@ import java.util.*;
 public class Rook extends Piece{
 
     private int moved = 0;
+    private int original = 1;
 
     public Rook(int player, int x, int y) {
         this.player = player;
@@ -28,6 +29,16 @@ public class Rook extends Piece{
     public void setMoved(int status) {
         this.moved = status;
     }
+
+
+    public int getOriginal() {
+        return this.original;
+    }
+
+    public void setOriginal(int value) {
+        this.original = value;
+    }
+
 
     @Override
     public List<List<List<Integer>>> getTheoreticMoves(Board input_board) {

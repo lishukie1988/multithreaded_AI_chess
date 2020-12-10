@@ -103,6 +103,14 @@ public class Board {
         return this.player_pieces.get(player);
     }
 
+    public int getTurnNumber() {
+        return turn_number;
+    }
+
+    public void increaseTurnNumber() {
+        this.turn_number++;
+    }
+
 
     public int inCheck(int player) {
 
@@ -131,12 +139,12 @@ public class Board {
 
     // *** VALIDATED
     private void boardPlace(List<Integer> position, Piece piece) {
-        System.out.println("reached boardPlace");
-        System.out.println(position);
-        System.out.println(piece);
+        //System.out.println("reached boardPlace");
+        //System.out.println(position);
+        //System.out.println(piece);
         this.board.get(position.get(0)).set(position.get(1), piece);
         piece.setPosition(position.get(0), position.get(1));
-        System.out.println(piece.getPosition());
+        //System.out.println(piece.getPosition());
     }
 
     // *** VALIDATED
@@ -181,10 +189,10 @@ public class Board {
 
     // *** VALIDATED
     public Piece move(List<Integer> start_pos, List<Integer> dest_pos) {
-        System.out.println("reached move");
-        System.out.println("start pos = " + start_pos);
+        //System.out.println("reached move");
+        //System.out.println("start pos = " + start_pos);
         Piece retrieved = this.boardRemove(start_pos);
-        System.out.println(retrieved);
+        //System.out.println(retrieved);
         this.boardPlace(dest_pos, retrieved);
         return retrieved;
     }

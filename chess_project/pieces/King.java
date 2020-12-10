@@ -64,7 +64,7 @@ public class King extends Piece{
                     retrieved_rook.getPlayer() != this.player) {
                 validated = 0;
             }
-            else if (((Rook) retrieved_rook).getMoved() != 0) {
+            else if (((Rook) retrieved_rook).getMoved() != 0 || ((Rook) retrieved_rook).getOriginal() == 0) {
                 validated = 0;
             }
 
@@ -91,12 +91,15 @@ public class King extends Piece{
                 List<Integer> dest_pos = new ArrayList<>(2);
                 dest_pos.add(4 + shift);
                 dest_pos.add(y_axis);
-                Piece retrieved_king = input_board.move(this.position, dest_pos);
+                List<Integer> theoretic_backup_start_pos = new ArrayList<>(2);
+                theoretic_backup_start_pos.add(this.position.get(0));
+                theoretic_backup_start_pos.add(this.position.get(1));
+                Piece retrieved_king = input_board.move(theoretic_backup_start_pos, dest_pos);
                 if (input_board.inCheck(this.player) != 0) {
                     validated = 0;
                 }
                 // reverse test move
-                input_board.move(dest_pos, this.position);
+                input_board.move(dest_pos, theoretic_backup_start_pos);
             }
             // add current castling move to returned_list
             if (validated == 1) {
