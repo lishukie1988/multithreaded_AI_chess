@@ -43,7 +43,10 @@ public class Queen extends Piece{
             if (current_piece == null || current_piece.getPlayer() != this.player) {
                 //System.out.println("inside while");
                 List<List<Integer>> move = new ArrayList<>(2);
-                move.add(this.position);
+                List<Integer> start = new ArrayList<>(2);
+                start.add(this.position.get(0));
+                start.add(this.position.get(1));
+                move.add(start);
                 List<Integer> dest = new ArrayList<>(2);
                 dest.add(x_axis + x_total_inc);
                 dest.add(y_axis + y_total_inc);

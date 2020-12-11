@@ -57,10 +57,10 @@ public class King extends Piece{
             int rook_x_axis = (i == 0) ? 0 : 7;
             int y_axis = (this.getPlayer() == 0) ? 0 : 7;
             int validated = 1;
-            int shift = (i = 0) ? -1 : 1;
+            int shift = (i == 0) ? -1 : 1;
             // king || chosen rook moved
             Piece retrieved_rook = input_board.getBoard().get(rook_x_axis).get(y_axis);
-            if (this.moved != 0 || retrieved_rook == null || retrieved_rook.getCharacter() != 'ki' ||
+            if (this.moved != 0 || retrieved_rook == null || retrieved_rook.getCharacter() != "ki" ||
                     retrieved_rook.getPlayer() != this.player) {
                 validated = 0;
             }
@@ -82,7 +82,7 @@ public class King extends Piece{
             }
             // this player's king not in check before move
             if (validated == 1) {
-                if (input_board.inCheck(this.player)) {
+                if (input_board.inCheck(this.player) != 0) {
                     validated = 0;
                 }
             }
@@ -104,7 +104,10 @@ public class King extends Piece{
             // add current castling move to returned_list
             if (validated == 1) {
                 List<List<Integer>> move = new ArrayList<>(2);
-                move.add(this.position); // start_pos
+                List<Integer> start = new ArrayList<>(2);
+                start.add(this.position.get(0));
+                start.add(this.position.get(1));
+                move.add(start);
                 List<Integer> dest = new ArrayList<>(2);
                 dest.add(4 + 2*shift);
                 dest.add(y_axis);
@@ -134,7 +137,10 @@ public class King extends Piece{
             if (dest_piece == null || dest_piece.getPlayer() != this.player) {
                 //System.out.println("inside while");
                 List<List<Integer>> move = new ArrayList<>(2);
-                move.add(this.position);
+                List<Integer> start = new ArrayList<>(2);
+                start.add(this.position.get(0));
+                start.add(this.position.get(1));
+                move.add(start);
                 List<Integer> dest = new ArrayList<>(2);
                 dest.add(x_dest);
                 dest.add(y_dest);
@@ -165,35 +171,32 @@ public class King extends Piece{
             }
             // if castling theoretic move
             else {
-                // if castling left
-                if (theoretic_move.get(2).get(0) == 0) {
-                    // validate in check status after move
-                    int shift = (theoretic_move.get(2).get(0) == 0) ? 1 : -1;
-                    int y_axis = this.position.get(1);
-                    int rook_start_x = (theoretic_move.get(2).get(0) == 0) ? 0 : 7;
-                    int rook_dest_x = theoretic_move.get(1).get(0) + shift;
-                    List<Integer> rook_start_pos = new ArrayList<>(2);
-                    rook_start_pos.add(rook_start_x);
-                    rook_start_pos.add(y_axis);
-                    List<Integer> rook_dest_pos = new ArrayList<>(2);
-                    rook_dest_pos.add(rook_dest_x);
-                    rook_dest_pos.add(y_axis);
+                // validate in check status after move
+                int shift = (theoretic_move.get(2).get(0) == 0) ? 1 : -1;
+                int y_axis = this.position.get(1);
+                int rook_start_x = (theoretic_move.get(2).get(0) == 0) ? 0 : 7;
+                int rook_dest_x = theoretic_move.get(1).get(0) + shift;
+                List<Integer> rook_start_pos = new ArrayList<>(2);
+                rook_start_pos.add(rook_start_x);
+                rook_start_pos.add(y_axis);
+                List<Integer> rook_dest_pos = new ArrayList<>(2);
+                rook_dest_pos.add(rook_dest_x);
+                rook_dest_pos.add(y_axis);
 
-                    Piece retrieved_king = input_board.move(theoretic_move.get(0), theoretic_move.get(1));
-                    Piece retrieved_rook = input_board.move(rook_start_x, rook_dest_x);
-                    int backup_moved = this.moved;
-                    this.moved = 1;
+                Piece retrieved_king = input_board.move(theoretic_move.get(0), theoretic_move.get(1));
+                Piece retrieved_rook = input_board.move(rook_start_pos, rook_dest_pos);
+                int backup_moved = this.moved;
+                this.moved = 1;
 
-                    if (input_board.inCheck(this.player) == 0) {
-                        theoretic_move.add(rook_start_pos);
-                        theoretic_move.add(rook_dest_pos);
-                        return_list.add(theoretic_move);
-                    }
-
-                    this.moved = backup_moved;
-                    Piece retrieved_rook = input_board.move(rook_dest_x, rook_start_x);
-                    Piece retrieved_king = input_board.move(theoretic_move.get(1), theoretic_move.get(0));
+                if (input_board.inCheck(this.player) == 0) {
+                    theoretic_move.add(rook_start_pos);
+                    theoretic_move.add(rook_dest_pos);
+                    return_list.add(theoretic_move);
                 }
+
+                this.moved = backup_moved;
+                input_board.move(rook_dest_pos, rook_start_pos);
+                input_board.move(theoretic_move.get(1), theoretic_move.get(0));
             }
         }
 

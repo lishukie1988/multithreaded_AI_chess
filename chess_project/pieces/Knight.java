@@ -49,7 +49,10 @@ public class Knight extends Piece{
             if (dest_piece == null || dest_piece.getPlayer() != this.player) {
                 //System.out.println("inside while");
                 List<List<Integer>> move = new ArrayList<>(2);
-                move.add(this.position);
+                List<Integer> start = new ArrayList<>(2);
+                start.add(this.position.get(0));
+                start.add(this.position.get(1));
+                move.add(start);
                 List<Integer> dest = new ArrayList<>(2);
                 dest.add(x_dest);
                 dest.add(y_dest);
@@ -62,6 +65,8 @@ public class Knight extends Piece{
     @Override
     public List<List<List<Integer>>> getLegalMoves(Board input_board) {
         List<List<List<Integer>>> return_list = new ArrayList<>();
+        List<List<List<Integer>>> theoretic_moves = this.getTheoreticMoves(input_board);
+        //System.out.println("theo moves in getlegalmoves: " + theoretic_moves);
         for (List<List<Integer>> theoretic_move : this.getTheoreticMoves(input_board)) {
             Piece captured = input_board.remove(theoretic_move.get(1));
             Piece mover = input_board.move(theoretic_move.get(0), theoretic_move.get(1));

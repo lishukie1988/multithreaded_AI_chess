@@ -66,6 +66,7 @@ public class Pawn extends Piece{
                 // & 1st array filled with 1st square info & appended to return_list
                 List<List<Integer>> second_square_move = newMovePositions(player_x, player_y + 2*y_shift, 3);
                 addToMovePositions(second_square_move, 4, -99);
+                return_list.add(second_square_move);
             }
         }
 
@@ -74,23 +75,23 @@ public class Pawn extends Piece{
         // for each direction (left/right)
         for (int x = 0; x < 2; x++) {
             int x_shift = (x == 0) ? -1 : 1;
-            Piece capture = input_board.getBoard().get(player_x + x_shift).get(player_y + y_shift);
             // check to see if dest_square is within bounds & contains an opponent piece
             if (0 <= player_y + y_shift && player_y + y_shift <= 7 &&
-                    0 <= player_x + x_shift && player_x + x_shift <= 7 &&
-                    capture != null &&
-                    capture.getPlayer() != this.player) {
+                    0 <= player_x + x_shift && player_x + x_shift <= 7) {
+                Piece capture = input_board.getBoard().get(player_x + x_shift).get(player_y + y_shift);
+                if (capture != null && capture.getPlayer() != this.player) {
 
-                List<List<Integer>> capture_move = newMovePositions(player_x + x_shift, player_y + y_shift, 3);
+                    List<List<Integer>> capture_move = newMovePositions(player_x + x_shift, player_y + y_shift, 3);
 
-                // check if dest pos = 8th rank of player
-                // if so, add extra type element into theoretic move
-                // modularize
-                if (player_y + y_shift == 0 || player_y + y_shift == 7) {
-                    addToMovePositions(capture_move, 2, -99);
+                    // check if dest pos = 8th rank of player
+                    // if so, add extra type element into theoretic move
+                    // modularize
+                    if (player_y + y_shift == 0 || player_y + y_shift == 7) {
+                        addToMovePositions(capture_move, 2, -99);
+                    }
+
+                    return_list.add(capture_move);
                 }
-
-                return_list.add(capture_move);
             }
         }
 
@@ -123,7 +124,10 @@ public class Pawn extends Piece{
         dest_pos.add(dest_x);
         dest_pos.add(dest_y);
         List<List<Integer>> move = new ArrayList<>(capacity);
-        move.add(this.position);
+        List<Integer> start = new ArrayList<>(2);
+        start.add(this.position.get(0));
+        start.add(this.position.get(1));
+        move.add(start);
         move.add(dest_pos);
         return move;
     }
@@ -148,23 +152,47 @@ public class Pawn extends Piece{
             if (theoretic_move.size() == 2 || theoretic_move.get(2).get(0) == 2) {
                 Piece captured = input_board.remove(theoretic_move.get(1));
                 Piece player_pawn = input_board.move(theoretic_move.get(0), theoretic_move.get(1));
-                int player_pawn_moved = ((Pawn) player_pawn).getMoved();
-                ((Pawn)player_pawn).setMoved(1);
-                if (input_board.inCheck() != 1) {
+                int player_pawn_moved = this.moved;
+                this.moved = 1;
+                if (input_board.inCheck(this.player) != 1) {
                     return_list.add(theoretic_move);
                 }
                 input_board.move(theoretic_move.get(1), theoretic_move.get(0));
                 input_board.place(theoretic_move.get(1), captured);
-                ((Pawn) player_pawn).setMoved(player_pawn_moved);
+                this.moved = player_pawn_moved;
             }
 
             // if two_square_move
+            // no need to backup potentially captured piece, since 2 square moves requires empty dest pos
+            if (theoretic_move.size() > 2 && theoretic_move.get(2).get(0) == 4) {
+                Piece player_pawn = input_board.move(theoretic_move.get(0), theoretic_move.get(1));
+                int player_pawn_moved = this.getMoved();
+                int player_pawn_special = this.getSpecialTurnNumber();
+                this.moved = 1;
+                this.special_turn_number = input_board.getTurnNumber() - 1;
+                if (input_board.inCheck(this.player) != 1) {
+                    return_list.add(theoretic_move);
+                }
+                input_board.move(theoretic_move.get(1), theoretic_move.get(0));
+                this.moved = player_pawn_moved;
+                this.special_turn_number = player_pawn_special;
+            }
 
-
-
-
+            // if en passant
+            if (theoretic_move.size() > 2 && theoretic_move.get(2).get(0) == 3) {
+                // no need to change/backup moved attribute of player's pawn
+                // since moved == 1 before & after bc of en passant requirements
+                Piece captured = input_board.remove(theoretic_move.get(3));
+                Piece player_pawn = input_board.move(theoretic_move.get(0), theoretic_move.get(1));
+                if (input_board.inCheck(this.player) != 1) {
+                    return_list.add(theoretic_move);
+                }
+                input_board.move(theoretic_move.get(1), theoretic_move.get(0));
+                input_board.place(theoretic_move.get(3), captured);
+            }
         }
 
-
+        return return_list;
     }
+
 }

@@ -28,7 +28,7 @@ public class Bishop extends Piece{
         int y_axis = this.position.get(1);
         int x_total_inc = x_increment;
         int y_total_inc = y_increment;
-        System.out.println("before while");
+        //System.out.println("before while");
         //Piece current_piece = input_board.getBoard().get(x_axis + x_increment).get(y_axis + y_increment);
         while (y_axis + y_total_inc <= 7 && 0 <= y_axis + y_total_inc &&
                 x_axis + x_total_inc <= 7 && 0 <= x_axis + x_total_inc) {
@@ -36,9 +36,15 @@ public class Bishop extends Piece{
             Piece current_piece = input_board.getBoard().get(x_axis + x_total_inc).get(y_axis + y_total_inc);
             // if dest piece == null or belongs to opponent
             if (current_piece == null || current_piece.getPlayer() != this.player) {
-                System.out.println("inside while");
+                //System.out.println("inside while");
                 List<List<Integer>> move = new ArrayList<>(2);
-                move.add(this.position);
+                // ***bingo
+                // double check every piece & all classes to see if there are any more of these direct assignments of mutable objects (list<integer>)
+                //move.add(this.position);
+                List<Integer> start = new ArrayList<>(2);
+                start.add(this.position.get(0));
+                start.add(this.position.get(1));
+                move.add(start);
                 List<Integer> dest = new ArrayList<>(2);
                 dest.add(x_axis + x_total_inc);
                 dest.add(y_axis + y_total_inc);
