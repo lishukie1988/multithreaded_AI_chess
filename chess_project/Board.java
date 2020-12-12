@@ -62,9 +62,8 @@ public class Board {
                 if (x_axis == 4) {
                     this.player_pieces.get(y + 2).add(new_piece);
                 }
-                else {
-                    this.player_pieces.get(y).add(new_piece);
-                }
+                this.player_pieces.get(y).add(new_piece);
+
                 this.board.get(x_axis).set(y_axis, new_piece);
             }
         }
@@ -120,6 +119,8 @@ public class Board {
         king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
 
         for (Piece piece : this.player_pieces.get(opposite_player)) {
+            //System.out.println("in check loop");
+            //System.out.println(piece.getPlayer());
             //System.out.println("inCheck");
             //System.out.println(piece);
             // *** TODO: NEED TO IMPLEMENT getTheoreticMoves for ALL PIECES for this to not crash
@@ -133,6 +134,31 @@ public class Board {
         return 0;
     }
 
+
+    public int inCheckCastling(int player) {
+
+        int opposite_player = (player == 0) ? 1 : 0;
+        int opposite_starting_rank = (player == 0) ? 0 : 7;
+        List<Integer> king_position = new ArrayList<>(2);
+        king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(0));
+        king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
+
+        for (Piece piece : this.player_pieces.get(opposite_player)) {
+            if (piece.getCharacter() == "ki" || piece.getPosition().get(1) == opposite_starting_rank) {
+                continue;
+            }
+            //System.out.println("inCheck");
+            //System.out.println(piece);
+            // *** TODO: NEED TO IMPLEMENT getTheoreticMoves for ALL PIECES for this to not crash
+            List<List<List<Integer>>> theoretic_moves = piece.getTheoreticMoves(this);
+            for (List<List<Integer>> theoretic_move : theoretic_moves) {
+                if (theoretic_move.get(1).equals(king_position)) {
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
 
     // *** VALIDATED
     private void boardPlace(List<Integer> position, Piece piece) {

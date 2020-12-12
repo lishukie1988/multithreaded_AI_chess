@@ -31,6 +31,7 @@ public class King extends Piece{
 
     @Override
     public List<List<List<Integer>>> getTheoreticMoves(Board input_board) {
+        //System.out.println("reached King.getTheoreticMoves");
         List<List<List<Integer>>> return_list = new ArrayList<>();
         // basic moves
         for (int x = -1; x < 2; x++) {
@@ -41,61 +42,68 @@ public class King extends Piece{
                 basicMoves(x, y, return_list, input_board);
             }
         }
-        /*
-        basicMoves(1,0, return_list, input_board);
-        basicMoves(1,1, return_list, input_board);
-        basicMoves(0,1, return_list, input_board);
-        basicMoves(-1,-1, return_list, input_board);
-        basicMoves(-1,0, return_list, input_board);
-        basicMoves(-1,-1, return_list, input_board);
-        basicMoves(0,-1, return_list, input_board);
-        basicMoves(1,-1, return_list, input_board);
-         */
 
         // castling i = 0 = left, 2 = right
+        //int debug_loop_count = 0;
+
         for (int i = 0; i < 2; i++) {
+            //debug_loop_count++;
+            //System.out.println("reached check castling loop: " + debug_loop_count);
             int rook_x_axis = (i == 0) ? 0 : 7;
             int y_axis = (this.getPlayer() == 0) ? 0 : 7;
             int validated = 1;
             int shift = (i == 0) ? -1 : 1;
             // king || chosen rook moved
             Piece retrieved_rook = input_board.getBoard().get(rook_x_axis).get(y_axis);
-            if (this.moved != 0 || retrieved_rook == null || retrieved_rook.getCharacter() != "ki" ||
+            if (this.moved != 0 || retrieved_rook == null || retrieved_rook.getCharacter() != "ro" ||
                     retrieved_rook.getPlayer() != this.player) {
                 validated = 0;
+                //System.out.println();
+                //System.out.println("player's king moved / retrieved null / retrieved !rook / !player");
+
             }
             else if (((Rook) retrieved_rook).getMoved() != 0 || ((Rook) retrieved_rook).getOriginal() == 0) {
                 validated = 0;
             }
 
+            //System.out.println("validated req 0, 1:" + validated);
+
             // no pieces between the 2 before move
             if (validated == 1) {
-                for (int x = 0; x == rook_x_axis; x += shift) {
-                    if (x == 0) {
-                        continue;
-                    }
-                    if (input_board.getBoard().get(4 + x).get(y_axis) != null) {
+                for (int x = rook_x_axis - shift; x != 4; x -= shift) {
+                    //System.out.println("current pos btwn ki & rook: " + "(" + x + ", " + y_axis + ")");
+                    if (input_board.getBoard().get(x).get(y_axis) != null) {
                         validated = 0;
                         break;
                     }
                 }
             }
+
             // this player's king not in check before move
+            // circular reference loop encountered when both kings have castling theoretic options available
+            // - ie BOTH KINGS in their ORIGINAL RANKS
+            // when checking if a king is INCHECK BEFORE & DURING (INTERMEDIATE SQUARE) a potential castling move:
+            // - verify that opponent doesn't have any piece that lands on player king's pos
+            //   - if OPPONENT KING in ORIGINAL RANK:
+            //      - SKIP OPPONENT KING PIECE since opponent king piece will GUARANTEE to not have a theoretic move that lands on player's king
             if (validated == 1) {
-                if (input_board.inCheck(this.player) != 0) {
+                //System.out.println("validated that no piece is in btwn ki & ro");
+                if (input_board.inCheckCastling(this.player) != 0) {
                     validated = 0;
                 }
             }
             // check if intermediate square move puts king in check
             if (validated == 1) {
+                //System.out.println("validated that player not in check before move");
                 List<Integer> dest_pos = new ArrayList<>(2);
                 dest_pos.add(4 + shift);
                 dest_pos.add(y_axis);
                 List<Integer> theoretic_backup_start_pos = new ArrayList<>(2);
                 theoretic_backup_start_pos.add(this.position.get(0));
                 theoretic_backup_start_pos.add(this.position.get(1));
-                Piece retrieved_king = input_board.move(theoretic_backup_start_pos, dest_pos);
-                if (input_board.inCheck(this.player) != 0) {
+                // input_board.move doesn't mutate position argument, safe to pass directly
+                Piece retrieved_king = input_board.move(this.position, dest_pos);
+                if (input_board.inCheckCastling(this.player) != 0) {
                     validated = 0;
                 }
                 // reverse test move
@@ -103,6 +111,7 @@ public class King extends Piece{
             }
             // add current castling move to returned_list
             if (validated == 1) {
+                //System.out.println("theoretic castling move " + rook_x_axis + " validated");
                 List<List<Integer>> move = new ArrayList<>(2);
                 List<Integer> start = new ArrayList<>(2);
                 start.add(this.position.get(0));
@@ -185,8 +194,10 @@ public class King extends Piece{
 
                 Piece retrieved_king = input_board.move(theoretic_move.get(0), theoretic_move.get(1));
                 Piece retrieved_rook = input_board.move(rook_start_pos, rook_dest_pos);
-                int backup_moved = this.moved;
+                int king_backup_moved = this.moved;
                 this.moved = 1;
+                int rook_backup_moved = ((Rook) retrieved_rook).getMoved();
+                ((Rook) retrieved_rook).setMoved(1);
 
                 if (input_board.inCheck(this.player) == 0) {
                     theoretic_move.add(rook_start_pos);
@@ -194,7 +205,8 @@ public class King extends Piece{
                     return_list.add(theoretic_move);
                 }
 
-                this.moved = backup_moved;
+                ((Rook) retrieved_rook).setMoved(rook_backup_moved);
+                this.moved = king_backup_moved;
                 input_board.move(rook_dest_pos, rook_start_pos);
                 input_board.move(theoretic_move.get(1), theoretic_move.get(0));
             }

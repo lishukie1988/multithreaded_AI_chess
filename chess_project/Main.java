@@ -1,5 +1,7 @@
 package chess_project;
 import chess_project.pieces.*;
+
+import java.nio.file.LinkPermission;
 import java.util.*;
 
 public class Main {
@@ -15,7 +17,8 @@ public class Main {
         //testQueenLegal();
         //testRookLegal();
         //testPawnLegal();
-        testKingTheoretic();
+        //testKingTheoretic();
+        testKingLegal();
 
     }
 
@@ -189,8 +192,48 @@ public class Main {
 
     public static void testKingTheoretic() {
 
+        Board new_board = new Board();
+        //setupMove(new_board,4,0,7,2);
+        //setupMove(new_board,4,7,0,3);
 
+        setupRemove(new_board,1,0);
+        setupRemove(new_board,2,0);
+        setupRemove(new_board,3,0);
+        setupRemove(new_board,1,7);
+        setupRemove(new_board,2,7);
+        setupRemove(new_board,3,7);
+        //setupRemove(new_board,5,0);
+        //setupRemove(new_board,6,0);
+        setupRemove(new_board,5,7);
+        setupRemove(new_board,6,7);
+        setupRemove(new_board,6,0);
+        setupRemove(new_board,0,0);
+        setupRemove(new_board,0,7);
+        //setupRemove(new_board,7,7);
+        setupRemove(new_board,3,6);
+        setupRemove(new_board,4,6);
+        setupRemove(new_board,5,6);
+        //((Rook)new_board.getBoard().get(0).get(0)).setMoved(1);
+        //((King)new_board.getBoard().get(4).get(0)).setMoved(1);
+        new_board.displayBoard();
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
 
+        System.out.println("King @ (4,7): ");
+        List<List<List<Integer>>> theoretic_moves = new_board.getBoard().get(4).get(7).getTheoreticMoves(new_board);
+        System.out.println(theoretic_moves + "len: " + theoretic_moves.size());
+
+        System.out.println("King @ (4,0): ");
+        List<List<List<Integer>>> theoretic_moves1 = new_board.getBoard().get(4).get(0).getTheoreticMoves(new_board);
+        System.out.println(theoretic_moves1 + "len: " + theoretic_moves1.size());
+
+        //System.out.println("King @ (0,3): ");
+        //List<List<List<Integer>>> theoretic_moves = new_board.getBoard().get(0).get(3).getTheoreticMoves(new_board);
+        //System.out.println(theoretic_moves + "len: " + theoretic_moves.size());
+
+        //System.out.println("King @ (7,2): ");
+        //List<List<List<Integer>>> theoretic_moves1 = new_board.getBoard().get(7).get(2).getTheoreticMoves(new_board);
+        //System.out.println(theoretic_moves1 + "len: " + theoretic_moves1.size());
     }
 
     public static void testBishopLegal() {
@@ -395,6 +438,67 @@ public class Main {
 
     }
 
+
+    public static void testKingLegal() {
+
+
+        Board new_board = new Board();
+        //setupMove(new_board,4,0,7,2);
+        //setupMove(new_board,4,7,0,3);
+        //new_board.displayBoard();
+
+
+        setupRemove(new_board,1,0);
+        setupRemove(new_board,2,0);
+        setupRemove(new_board,3,0);
+        setupRemove(new_board,1,7);
+        setupRemove(new_board,2,7);
+        setupRemove(new_board,3,7);
+        //setupRemove(new_board,5,0);
+        //setupRemove(new_board,6,0);
+        setupRemove(new_board,5,7);
+        setupRemove(new_board,6,7);
+        setupRemove(new_board,6,0);
+        setupRemove(new_board,0,0);
+        setupRemove(new_board,0,7);
+        //setupRemove(new_board,7,7);
+        setupRemove(new_board,3,6);
+        setupRemove(new_board,4,6);
+        setupRemove(new_board,5,6);
+
+        //setupMove(new_board,5,1,5,6);
+        setupMove(new_board,5,1,4,6);
+        setupRemove(new_board,5,0);
+        setupRemove(new_board,4,1);
+        setupMove(new_board, 6,6,4,1);
+
+
+        //((Rook)new_board.getBoard().get(0).get(0)).setMoved(1);
+        //((King)new_board.getBoard().get(4).get(0)).setMoved(1);
+        new_board.displayBoard();
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+        System.out.println("King @ (4,7): ");
+        List<List<List<Integer>>> theoretic_moves = new_board.getBoard().get(4).get(7).getLegalMoves(new_board);
+        System.out.println(theoretic_moves + "len: " + theoretic_moves.size());
+
+        System.out.println("King @ (4,0): ");
+        List<List<List<Integer>>> theoretic_moves1 = new_board.getBoard().get(4).get(0).getLegalMoves(new_board);
+        System.out.println(theoretic_moves1 + "len: " + theoretic_moves1.size());
+
+        //System.out.println("King @ (0,3): ");
+        //List<List<List<Integer>>> theoretic_moves = new_board.getBoard().get(0).get(3).getTheoreticMoves(new_board);
+        //System.out.println(theoretic_moves + "len: " + theoretic_moves.size());
+
+        //System.out.println("King @ (7,2): ");
+        //List<List<List<Integer>>> theoretic_moves1 = new_board.getBoard().get(7).get(2).getTheoreticMoves(new_board);
+        //System.out.println(theoretic_moves1 + "len: " + theoretic_moves1.size());
+
+
+    }
+
+
     public static void setupMove(Board input_board, int start_x, int start_y, int dest_x, int dest_y) {
         List<List<Integer>> move_positions = new ArrayList<>(2);
         List<Integer> start_pos = new ArrayList<>(2);
@@ -407,6 +511,8 @@ public class Main {
         move_positions.add(dest_pos);
         input_board.normalMove(move_positions);
     }
+
+
     public static void setupRemove(Board input_board, int x, int y) {
         List<Integer> remove_pos = new ArrayList<>(2);
         remove_pos.add(x);
