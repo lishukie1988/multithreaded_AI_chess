@@ -79,6 +79,7 @@ public class Board {
 
     public void displayBoard() {
         for (int y = 7; y > -1; y--) {
+            System.out.printf(y + 1 + " ");
             for (int x = 0; x < 8; x++) {
                 Piece current_piece = this.board.get(x).get(y);
                 if (current_piece != null) {
@@ -90,6 +91,13 @@ public class Board {
                 }
             }
             System.out.printf("%n");
+        }
+
+        int ascii = 65;
+        System.out.printf("  ");
+        for (int x = 0; x < 8; x++) {
+            System.out.printf("---" + (char)ascii + (char)ascii + "---");
+            ascii++;
         }
     }
 
@@ -119,14 +127,10 @@ public class Board {
         king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
 
         for (Piece piece : this.player_pieces.get(opposite_player)) {
-            //System.out.println("in check loop");
-            //System.out.println(piece.getPlayer());
-            //System.out.println("inCheck");
-            //System.out.println(piece);
-            // *** TODO: NEED TO IMPLEMENT getTheoreticMoves for ALL PIECES for this to not crash
             List<List<List<Integer>>> theoretic_moves = piece.getTheoreticMoves(this);
             for (List<List<Integer>> theoretic_move : theoretic_moves) {
                 if (theoretic_move.get(1).equals(king_position)) {
+                    //System.out.println(theoretic_move);
                     return 1;
                 }
             }
@@ -147,9 +151,6 @@ public class Board {
             if (piece.getCharacter() == "ki" || piece.getPosition().get(1) == opposite_starting_rank) {
                 continue;
             }
-            //System.out.println("inCheck");
-            //System.out.println(piece);
-            // *** TODO: NEED TO IMPLEMENT getTheoreticMoves for ALL PIECES for this to not crash
             List<List<List<Integer>>> theoretic_moves = piece.getTheoreticMoves(this);
             for (List<List<Integer>> theoretic_move : theoretic_moves) {
                 if (theoretic_move.get(1).equals(king_position)) {
@@ -249,6 +250,116 @@ public class Board {
         }
 
     }
+
+    public void castlingMove(List<List<Integer>> move_positions_type) {
+
+        /*
+        int rook_x_axis = (move_positions_type.get(2).get(0) == 0) ? 0 : 7;
+        int y_axis = move_positions_type.get(0).get(1);
+        int rook_shift = (move_positions_type.get(2).get(0) == 0) ? 1 : -1;
+        int rook_dest_x = move_positions_type.get(1).get(0) + rook_shift;
+        List<Integer> rook_start_pos = new ArrayList<>(2);
+        rook_start_pos.add(rook_x_axis);
+        rook_start_pos.add(y_axis);
+        List<Integer> rook_dest_pos = new ArrayList<>(2);
+        rook_dest_pos.add(rook_dest_x);
+        rook_dest_pos.add(y_axis);
+
+         */
+
+        Piece king = this.move(move_positions_type.get(0), move_positions_type.get(1));
+        //Piece rook = this.move(rook_start_pos, rook_dest_pos);
+        Piece rook = this.move(move_positions_type.get(3), move_positions_type.get(4));
+
+        ((King) king).setMoved(1);
+        ((Rook) rook).setMoved(1);
+
+    }
+
+
+    public void enPassantMove(List<List<Integer>> move_positions_type) {
+
+        this.remove(move_positions_type.get(3));
+        this.move(move_positions_type.get(0), move_positions_type.get(1));
+
+    }
+
+
+    public void promotionMove(List<List<Integer>> move_positions_type) {
+
+        int dest_x = move_positions_type.get(1).get(0);
+        int dest_y = move_positions_type.get(1).get(1);
+        int player = (dest_y == 0) ? 1 : 0;
+
+        this.remove(move_positions_type.get(1));
+        this.remove(move_positions_type.get(0));
+
+        Scanner get_choice = new Scanner(System.in);
+        System.out.print("Please pick a piece to promote Pawn to (0 = Queen, 1 = Bishop, 2 = Knight, 3 = Rook): ");
+        int user_choice = get_choice.nextInt();
+        Piece new_piece;
+        switch(user_choice) {
+            case 0:
+                new_piece = new Queen(player, dest_x, dest_y);
+                this.place(move_positions_type.get(1), new_piece);
+                break;
+            case 1:
+                new_piece = new Bishop(player, dest_x, dest_y);
+                this.place(move_positions_type.get(1), new_piece);
+                break;
+            case 2:
+                new_piece = new Knight(player, dest_x, dest_y);
+                this.place(move_positions_type.get(1), new_piece);
+                break;
+            case 3:
+                new_piece = new Rook(player, dest_x, dest_y);
+                ((Rook) new_piece).setOriginal(0);
+                this.place(move_positions_type.get(1), new_piece);
+                break;
+        }
+    }
+
+
+    public void twoSquarePawnMove(List<List<Integer>> move_positions_type) {
+
+        Piece pawn = this.move(move_positions_type.get(0), move_positions_type.get(1));
+        ((Pawn) pawn).setMoved(1);
+        ((Pawn) pawn).setSpecialTurnNumber(this.turn_number);
+
+    }
+
+
+    public void makeMove(List<List<Integer>> move_positions_type) {
+
+        // normal move
+        if (move_positions_type.size() == 2) {
+            this.normalMove(move_positions_type);
+        }
+
+        // special move
+        else {
+
+            // castling move
+            if (move_positions_type.get(2).get(0) == 0 || move_positions_type.get(2).get(0) == 1) {
+                this.castlingMove(move_positions_type);
+            }
+            // en passant move
+            else if (move_positions_type.get(2).get(0) == 3) {
+                this.enPassantMove(move_positions_type);
+            }
+            // promotion move
+            else if (move_positions_type.get(2).get(0) == 2) {
+                this.promotionMove(move_positions_type);
+            }
+            // two square move
+            else if (move_positions_type.get(2).get(0) == 4) {
+                this.twoSquarePawnMove(move_positions_type);
+            }
+
+        }
+
+    }
+
 
 }
 
