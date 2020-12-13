@@ -346,6 +346,21 @@ public class Board {
     }
 
 
+    public void promotionMoveAI(List<List<Integer>> move_positions_type) {
+
+        int dest_x = move_positions_type.get(1).get(0);
+        int dest_y = move_positions_type.get(1).get(1);
+
+        this.remove(move_positions_type.get(1));
+        this.remove(move_positions_type.get(0));
+
+        Piece new_piece;
+        new_piece = new Queen(1, dest_x, dest_y);
+        this.place(move_positions_type.get(1), new_piece);
+
+    }
+
+
     public void twoSquarePawnMove(List<List<Integer>> move_positions_type) {
 
         Piece pawn = this.move(move_positions_type.get(0), move_positions_type.get(1));
