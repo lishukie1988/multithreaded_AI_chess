@@ -28,8 +28,8 @@ public class Main {
         //testMakeMoveCastling();
         //testMakeMovePassant();
 
-        Game new_game = new Game();
-        new_game.getMove();
+        //Game new_game = new Game();
+        //new_game.getMove();
 
 
     }
@@ -469,18 +469,18 @@ public class Main {
         setupRemove(new_board,5,7);
         setupRemove(new_board,6,7);
         setupRemove(new_board,6,0);
-        setupRemove(new_board,0,0);
-        setupRemove(new_board,0,7);
+        //setupRemove(new_board,0,0);
+        //setupRemove(new_board,0,7);
         //setupRemove(new_board,7,7);
         setupRemove(new_board,3,6);
         setupRemove(new_board,4,6);
         setupRemove(new_board,5,6);
 
         //setupMove(new_board,5,1,5,6);
-        setupMove(new_board,5,1,4,6);
+        setupMove(new_board,5,1,4,5);
         setupRemove(new_board,5,0);
         setupRemove(new_board,4,1);
-        setupMove(new_board, 6,6,4,1);
+        setupMove(new_board, 6,6,4,2);
 
 
         //((Rook)new_board.getBoard().get(0).get(0)).setMoved(1);

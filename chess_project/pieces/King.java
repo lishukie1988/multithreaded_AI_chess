@@ -88,7 +88,7 @@ public class King extends Piece{
             //      - SKIP OPPONENT KING PIECE since opponent king piece will GUARANTEE to not have a theoretic move that lands on player's king
             if (validated == 1) {
                 //System.out.println("validated that no piece is in btwn ki & ro");
-                if (input_board.inCheckCastling(this.player) != 0) {
+                if (input_board.inCheck(this.player) != 0) {
                     validated = 0;
                 }
             }
@@ -103,7 +103,7 @@ public class King extends Piece{
                 theoretic_backup_start_pos.add(this.position.get(1));
                 // input_board.move doesn't mutate position argument, safe to pass directly
                 Piece retrieved_king = input_board.move(this.position, dest_pos);
-                if (input_board.inCheckCastling(this.player) != 0) {
+                if (input_board.inCheck(this.player) != 0) {
                     validated = 0;
                 }
                 // reverse test move

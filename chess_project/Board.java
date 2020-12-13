@@ -119,7 +119,7 @@ public class Board {
     }
 
 
-    public int inCheck(int player) {
+    public int inCheckNormal(int player) {
 
         int opposite_player = (player == 0) ? 1 : 0;
         List<Integer> king_position = new ArrayList<>(2);
@@ -138,17 +138,22 @@ public class Board {
         return 0;
     }
 
-
+    /*
+    - checks to see if player is in check by seeing if any of opposite player's pieces contain theo move which == player's king's position
+    - assumes both player's king is on its original rank
+    - checks to see if opposite player's king is also on its original rank
+      - if so, skips opposite player's king
+     */
     public int inCheckCastling(int player) {
 
         int opposite_player = (player == 0) ? 1 : 0;
-        int opposite_starting_rank = (player == 0) ? 0 : 7;
+        //int opposite_starting_rank = (player == 0) ? 0 : 7;
         List<Integer> king_position = new ArrayList<>(2);
         king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(0));
         king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
 
         for (Piece piece : this.player_pieces.get(opposite_player)) {
-            if (piece.getCharacter() == "ki" || piece.getPosition().get(1) == opposite_starting_rank) {
+            if (piece.getCharacter() == "ki") {
                 continue;
             }
             List<List<List<Integer>>> theoretic_moves = piece.getTheoreticMoves(this);
@@ -160,6 +165,27 @@ public class Board {
         }
         return 0;
     }
+
+
+    public int inCheck(int player) {
+
+        int opposite_player = (player == 0) ? 1 : 0;
+        int player_king_start_rank = (player == 0) ? 0 : 7;
+        int opposite_player_king_start_rank = (player == 0) ? 7 : 0;
+        // if both player's kings on their original ranks:
+            // call inCheckNormal
+        if (this.getPlayerPieces(player + 2).get(0).getPosition().get(1) == player_king_start_rank &&
+                this.getPlayerPieces(opposite_player + 2).get(0).getPosition().get(1) == opposite_player_king_start_rank) {
+            return this.inCheckCastling(player);
+        }
+
+        // if not both player's kings on their original ranks:
+            // call inCheckCastling
+        else {
+            return this.inCheckNormal(player);
+        }
+    }
+
 
     // *** VALIDATED
     private void boardPlace(List<Integer> position, Piece piece) {
