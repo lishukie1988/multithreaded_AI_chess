@@ -27,6 +27,8 @@ public class Main {
         //testMakeMovePromotion();
         //testMakeMoveCastling();
         //testMakeMovePassant();
+        //testGetAllLegalMoves();
+        //testGetAllLegalMoves2();
 
         //Game new_game = new Game();
         //new_game.getMove();
@@ -1299,6 +1301,66 @@ public class Main {
         System.out.println(new_board.getBoard().get(4).get(3).getPosition());
         System.out.println(((Pawn) new_board.getBoard().get(4).get(3)).getSpecialTurnNumber());
         System.out.println(((Pawn) new_board.getBoard().get(4).get(3)).getMoved());
+    }
+
+    public static void testGetAllLegalMoves() {
+
+        Board new_board = new Board();
+
+        setupRemove(new_board, 4, 6);
+        // when white pawn moves from (5,6) to (5,<6) instead of (5,6), removes black pawn @ (5,<6) in the process
+        // (5,6) is empty ONLY AFTER the MOVE BELOW, it is STILL OCCUPIED @ THIS POINT of EXECUTION
+        //new_board.displayBoard();
+
+
+
+        setupMove(new_board, 0,1,3,3);
+        ((Pawn)new_board.getBoard().get(3).get(3)).setMoved(1);
+        setupMove(new_board, 2,6,2,4);
+        ((Pawn)new_board.getBoard().get(2).get(4)).setMoved(1);
+        ((Pawn)new_board.getBoard().get(2).get(4)).setSpecialTurnNumber(0);
+        setupMove(new_board, 6,1,6,4);
+        ((Pawn)new_board.getBoard().get(6).get(4)).setMoved(1);
+
+
+        setupMove(new_board, 5,6,4,3);
+        //((Pawn)new_board.getBoard().get(4).get(3)).setSpecialTurnNumber(0);
+        ((Pawn)new_board.getBoard().get(4).get(3)).setMoved(1);
+
+        setupMove(new_board, 4,1,5,6);
+        ((Pawn)new_board.getBoard().get(5).get(6)).setMoved(1);
+
+        setupMove(new_board, 7,1,7,2);
+        ((Pawn)new_board.getBoard().get(7).get(2)).setMoved(1);
+        setupMove(new_board, 1,1,1,3);
+        ((Pawn)new_board.getBoard().get(1).get(3)).setSpecialTurnNumber(0);
+        ((Pawn)new_board.getBoard().get(1).get(3)).setMoved(1);
+        setupMove(new_board, 0,6,0,3);
+        ((Pawn)new_board.getBoard().get(0).get(3)).setMoved(1);
+
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+
+        System.out.println("All legal moves of player white: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(0);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+
+    }
+
+    public static void testGetAllLegalMoves2() {
+
+        Board new_board = new Board();
+        new_board.displayBoard();
+        System.out.println("All legal moves of player white: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(0);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
     }
 
 
