@@ -34,11 +34,10 @@ public class Main {
         //testGetAIMoveNoKnight();
         //testGetAIMoveNoKnightNoQueen();
         //testGetAIMoveOnlyPawn();
-        testGetAIMoveOnePawn();
+        //testGetAIMoveOnePawn();
         //testGetAIMoveOnlyKing();
-        //Game new_game = new Game();
-        //new_game.getMove();
-
+        //testGetUserInput();
+        testGetUserMove();
 
     }
 
@@ -2006,6 +2005,21 @@ public class Main {
 
          */
 
+
+    }
+
+    public static void testGetUserInput() {
+
+        Game new_game = new Game();
+        System.out.println(new_game.getUserInput());
+
+    }
+
+    public static void testGetUserMove() {
+
+        Game new_game = new Game();
+        //System.out.println(new_game.getUserMove());
+        new_game.playGame();
 
     }
 

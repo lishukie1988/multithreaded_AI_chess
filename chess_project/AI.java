@@ -26,7 +26,7 @@ public class AI {
 
     }
 
-
+    // TEMPORARILY PUBLIC, set back to PRIVATE LATER
     public static List<List<Integer>> getAIMoveMaxRecursion(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board) {
         //System.out.println("current recursion depth: " + current_recursion);
         List<List<List<Integer>>> legal_moves = input_board.getAllLegalMoves(1);
@@ -187,8 +187,8 @@ public class AI {
 
         Piece king = input_board.move(reverse_move.getMockMove().get(1), reverse_move.getMockMove().get(0));
         Piece rook = input_board.move(reverse_move.getMockMove().get(4), reverse_move.getMockMove().get(3));
-        ((King) king).setMoved(1);
-        ((Rook) rook).setMoved(1);
+        ((King) king).setMoved(0);
+        ((Rook) rook).setMoved(0);
         input_board.decreaseTurnNumber();
     }
 
