@@ -29,7 +29,13 @@ public class Main {
         //testMakeMovePassant();
         //testGetAllLegalMoves();
         //testGetAllLegalMoves2();
-
+        //testGetAIMove1To2Recursions();
+        //testGetAIMoveNewBoard();
+        //testGetAIMoveNoKnight();
+        //testGetAIMoveNoKnightNoQueen();
+        //testGetAIMoveOnlyPawn();
+        testGetAIMoveOnePawn();
+        //testGetAIMoveOnlyKing();
         //Game new_game = new Game();
         //new_game.getMove();
 
@@ -1360,6 +1366,646 @@ public class Main {
         System.out.println("All legal moves of player white: ");
         List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(0);
         System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+    }
+
+    public static void testGetAIMove1To2Recursions() {
+
+        Board new_board = new Board();
+
+        setupRemove(new_board, 4, 6);
+        setupRemove(new_board, 5,1);
+        //new_board.displayBoard();
+        // when white pawn moves from (5,6) to (5,<6) instead of (5,6), removes black pawn @ (5,<6) in the process
+        // (5,6) is empty ONLY AFTER the MOVE BELOW, it is STILL OCCUPIED @ THIS POINT of EXECUTION
+        //new_board.displayBoard();
+
+
+
+        setupMove(new_board, 0,1,3,3);
+        ((Pawn)new_board.getBoard().get(3).get(3)).setMoved(1);
+        setupMove(new_board, 2,6,2,4);
+        ((Pawn)new_board.getBoard().get(2).get(4)).setMoved(1);
+        ((Pawn)new_board.getBoard().get(2).get(4)).setSpecialTurnNumber(0);
+        setupMove(new_board, 6,1,6,4);
+        ((Pawn)new_board.getBoard().get(6).get(4)).setMoved(1);
+
+
+        setupMove(new_board, 5,6,5,3);
+        //((Pawn)new_board.getBoard().get(4).get(3)).setSpecialTurnNumber(0);
+        ((Pawn)new_board.getBoard().get(5).get(3)).setMoved(1);
+
+        setupMove(new_board, 4,1,5,5);
+        ((Pawn)new_board.getBoard().get(5).get(5)).setMoved(1);
+
+        setupMove(new_board, 7,1,7,2);
+        ((Pawn)new_board.getBoard().get(7).get(2)).setMoved(1);
+        setupMove(new_board, 1,1,1,3);
+        ((Pawn)new_board.getBoard().get(1).get(3)).setSpecialTurnNumber(0);
+        ((Pawn)new_board.getBoard().get(1).get(3)).setMoved(1);
+        setupMove(new_board, 0,6,0,3);
+        ((Pawn)new_board.getBoard().get(0).get(3)).setMoved(1);
+        setupMove(new_board, 3,1,4,1);
+        ((Pawn)new_board.getBoard().get(4).get(1)).setMoved(1);
+
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+
+        /*
+        System.out.println("All legal moves of player white: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(0);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+         */
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+        /*
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 0: ");
+        System.out.println(fetched_ai_move);
+
+         */
+
+        /*
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1: ");
+        System.out.println(fetched_ai_move);
+
+
+         */
+
+        List<List<Integer>> fetched_ai_move = AI.getAIMove(new_board);
+
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move);
+
+
+        // repeat of command before ai move call
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves2 = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves2 + "len: " + all_legal_moves2.size());
+
+    }
+
+    public static void testGetAIMoveNewBoard() {
+
+        Board new_board = new Board();
+
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+
+        /*
+        System.out.println("All legal moves of player white: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(0);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+         */
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 0: ");
+        System.out.println(fetched_ai_move);
+
+
+        /*
+
+        List<List<Integer>> fetched_ai_move2 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1: ");
+        System.out.println(fetched_ai_move2);
+
+
+        List<List<Integer>> fetched_ai_move4 = AI.getAIMoveMaxRecursion(null, 0, 2, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 2 (just enough to derive in check kn move): ");
+        System.out.println(fetched_ai_move4);
+
+
+        List<List<Integer>> fetched_ai_move5 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1 (just under depth needed to derive in check kn move, ie = null): ");
+        System.out.println(fetched_ai_move5);
+
+         */
+
+        List<List<Integer>> fetched_ai_move3 = AI.getAIMove(new_board);
+
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move3);
+
+
+
+
+        // repeat of command before ai move call
+
+        /*
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves2 = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves2 + "len: " + all_legal_moves2.size());
+
+         */
+
+    }
+
+
+    public static void testGetAIMoveNoKnight() {
+
+        Board new_board = new Board();
+
+
+        setupRemove(new_board,1,7);
+        setupRemove(new_board,6,7);
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+
+        /*
+        System.out.println("All legal moves of player white: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(0);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+         */
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 0: ");
+        System.out.println(fetched_ai_move);
+
+
+        /*
+
+        List<List<Integer>> fetched_ai_move2 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1: ");
+        System.out.println(fetched_ai_move2);
+
+
+        List<List<Integer>> fetched_ai_move4 = AI.getAIMoveMaxRecursion(null, 0, 2, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 2 (just enough to derive in check kn move): ");
+        System.out.println(fetched_ai_move4);
+
+
+        List<List<Integer>> fetched_ai_move5 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1 (just under depth needed to derive in check kn move, ie = null): ");
+        System.out.println(fetched_ai_move5);
+
+         */
+
+        List<List<Integer>> fetched_ai_move3 = AI.getAIMove(new_board);
+
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move3);
+
+
+
+
+        // repeat of command before ai move call
+
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves2 = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves2 + "len: " + all_legal_moves2.size());
+
+        List<List<Integer>> fetched_ai_move4 = AI.getAIMove(new_board);
+
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move4);
+
+
+    }
+
+    public static void testGetAIMoveNoKnightNoQueen() {
+
+        Board new_board = new Board();
+
+
+        setupRemove(new_board,1,7);
+        setupRemove(new_board,6,7);
+        setupRemove(new_board,3,7);
+
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+
+        /*
+        System.out.println("All legal moves of player white: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(0);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+         */
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 0: ");
+        System.out.println(fetched_ai_move);
+
+
+        /*
+
+        List<List<Integer>> fetched_ai_move2 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1: ");
+        System.out.println(fetched_ai_move2);
+
+
+        List<List<Integer>> fetched_ai_move4 = AI.getAIMoveMaxRecursion(null, 0, 2, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 2 (just enough to derive in check kn move): ");
+        System.out.println(fetched_ai_move4);
+
+
+        List<List<Integer>> fetched_ai_move5 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1 (just under depth needed to derive in check kn move, ie = null): ");
+        System.out.println(fetched_ai_move5);
+
+         */
+
+        List<List<Integer>> fetched_ai_move3 = AI.getAIMove(new_board);
+
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move3);
+
+
+
+
+        // repeat of command before ai move call
+
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves2 = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves2 + "len: " + all_legal_moves2.size());
+
+        List<List<Integer>> fetched_ai_move4 = AI.getAIMove(new_board);
+
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move4);
+
+
+    }
+
+    public static void testGetAIMoveOnlyPawn() {
+
+        Board new_board = new Board();
+
+
+        setupRemove(new_board,1,7);
+        setupRemove(new_board,2,7);
+        setupRemove(new_board,3,7);
+        setupRemove(new_board,5,7);
+        setupRemove(new_board,6,7);
+        setupRemove(new_board,7,7);
+        setupRemove(new_board,0,7);
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+
+        /*
+        System.out.println("All legal moves of player white: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(0);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+         */
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 0: ");
+        System.out.println(fetched_ai_move);
+
+
+        /*
+
+        List<List<Integer>> fetched_ai_move2 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1: ");
+        System.out.println(fetched_ai_move2);
+
+
+        List<List<Integer>> fetched_ai_move4 = AI.getAIMoveMaxRecursion(null, 0, 2, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 2 (just enough to derive in check kn move): ");
+        System.out.println(fetched_ai_move4);
+
+
+        List<List<Integer>> fetched_ai_move5 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1 (just under depth needed to derive in check kn move, ie = null): ");
+        System.out.println(fetched_ai_move5);
+
+         */
+
+        List<List<Integer>> fetched_ai_move3 = AI.getAIMove(new_board);
+
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move3);
+
+
+
+
+        // repeat of command before ai move call
+
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves2 = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves2 + "len: " + all_legal_moves2.size());
+
+        List<List<Integer>> fetched_ai_move4 = AI.getAIMove(new_board);
+
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move4);
+
+
+    }
+
+    public static void testGetAIMoveOnePawn() {
+
+        Board new_board = new Board();
+
+
+        setupRemove(new_board,1,7);
+        setupRemove(new_board,2,7);
+        setupRemove(new_board,3,7);
+        setupRemove(new_board,5,7);
+        setupRemove(new_board,6,7);
+        setupRemove(new_board,7,7);
+        setupRemove(new_board,0,7);
+
+        //setupRemove(new_board,1,6);
+        setupRemove(new_board,2,6);
+        setupRemove(new_board,3,6);
+        setupRemove(new_board,5,6);
+        setupRemove(new_board,6,6);
+        setupRemove(new_board,7,6);
+        setupRemove(new_board,0,6);
+        setupRemove(new_board,4,6);
+
+        //setupMove(new_board,3,7,2,3);
+        //((King)new_board.getBoard().get(2).get(3)).setMoved(1);
+
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+
+        /*
+        System.out.println("All legal moves of player white: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(0);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+         */
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 0: ");
+        System.out.println(fetched_ai_move);
+
+
+        /*
+
+        List<List<Integer>> fetched_ai_move2 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1: ");
+        System.out.println(fetched_ai_move2);
+
+
+        List<List<Integer>> fetched_ai_move4 = AI.getAIMoveMaxRecursion(null, 0, 2, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 2 (just enough to derive in check kn move): ");
+        System.out.println(fetched_ai_move4);
+
+
+        List<List<Integer>> fetched_ai_move5 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1 (just under depth needed to derive in check kn move, ie = null): ");
+        System.out.println(fetched_ai_move5);
+
+         */
+
+        List<List<Integer>> fetched_ai_move3 = AI.getAIMove(new_board);
+
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move3);
+
+
+
+
+        // repeat of command before ai move call
+
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves2 = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves2 + "len: " + all_legal_moves2.size());
+
+        List<List<Integer>> fetched_ai_move4 = AI.getAIMove(new_board);
+
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move4);
+
+
+    }
+
+    public static void testGetAIMoveOnlyKing() {
+
+        Board new_board = new Board();
+
+
+        setupRemove(new_board,1,7);
+        setupRemove(new_board,2,7);
+        setupRemove(new_board,3,7);
+        setupRemove(new_board,5,7);
+        setupRemove(new_board,6,7);
+        setupRemove(new_board,7,7);
+        setupRemove(new_board,0,7);
+
+        setupRemove(new_board,1,6);
+        setupRemove(new_board,2,6);
+        setupRemove(new_board,3,6);
+        setupRemove(new_board,5,6);
+        setupRemove(new_board,6,6);
+        setupRemove(new_board,7,6);
+        setupRemove(new_board,0,6);
+        setupRemove(new_board,4,6);
+
+        setupMove(new_board,4,7,2,3);
+        ((King)new_board.getBoard().get(2).get(3)).setMoved(1);
+
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+
+        /*
+        System.out.println("All legal moves of player white: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(0);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+         */
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
+
+
+        /*
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 0: ");
+        System.out.println(fetched_ai_move);
+
+         */
+
+
+        /*
+
+        List<List<Integer>> fetched_ai_move2 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1: ");
+        System.out.println(fetched_ai_move2);
+
+
+        List<List<Integer>> fetched_ai_move4 = AI.getAIMoveMaxRecursion(null, 0, 2, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 2 (just enough to derive in check kn move): ");
+        System.out.println(fetched_ai_move4);
+
+
+        List<List<Integer>> fetched_ai_move5 = AI.getAIMoveMaxRecursion(null, 0, 1, new_board);
+
+        System.out.println("fetched ai move with max recursion depth = 1 (just under depth needed to derive in check kn move, ie = null): ");
+        System.out.println(fetched_ai_move5);
+
+         */
+
+
+        // king not iterating through basic legal moves properly
+        // getAIMoveMaxRecursion not making mock move for succeeding recursion depth
+        //  - ie staying @ root_move[0] (original position) for all recursion depths
+        // test other pieces to see if root move advances for each succeeding recursion call
+        List<List<Integer>> fetched_ai_move3 = AI.getAIMove(new_board);
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move3);
+
+
+
+
+        // repeat of command before ai move call
+
+
+        /*
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+        System.out.println("All legal moves of player black: ");
+        List<List<List<Integer>>> all_legal_moves2 = new_board.getAllLegalMoves(1);
+        System.out.println(all_legal_moves2 + "len: " + all_legal_moves2.size());
+
+        List<List<Integer>> fetched_ai_move4 = AI.getAIMove(new_board);
+
+        System.out.println("fetched ai move with no max recursion: ");
+        System.out.println(fetched_ai_move4);
+
+         */
+
 
     }
 

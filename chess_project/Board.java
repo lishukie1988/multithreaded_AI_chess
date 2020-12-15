@@ -99,6 +99,7 @@ public class Board {
             System.out.printf("---" + (char)ascii + (char)ascii + "---");
             ascii++;
         }
+        System.out.println("");
     }
 
     public ArrayList<ArrayList<Piece>> getBoard() {
@@ -125,10 +126,10 @@ public class Board {
     public List<List<List<Integer>>> getAllLegalMoves(int player) {
         List<List<List<Integer>>> all_legal_moves = new ArrayList<>();
         for (Piece piece : this.getPlayerPieces(player)) {
-            System.out.println(piece.getCharacter());
+            //System.out.println(piece.getCharacter());
             List<List<List<Integer>>> this_piece_moves = piece.getLegalMoves(this);
-            System.out.println(this_piece_moves);
-            System.out.println(this_piece_moves.size());
+            //System.out.println(this_piece_moves);
+            //System.out.println(this_piece_moves.size());
             for (List<List<Integer>> move : this_piece_moves) {
                 all_legal_moves.add(move);
             }

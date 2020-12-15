@@ -10,7 +10,7 @@ public class ReverseMove {
     private Piece mover_piece = null;
     private Piece captured_piece = null;
     private int mover_moved = -99;
-    private int mover_special_turn_number = -99;
+    //private int mover_special_turn_number = -99;
 
     // constructor for normal type ReverseMove object
     public ReverseMove(List<List<Integer>> normal_move, int backup_mover_moved, Piece dest_piece) {
@@ -55,8 +55,11 @@ public class ReverseMove {
         return this.mover_moved;
     }
 
+    /*
     public int getMoverSpecialTurnNumber() {
         return this.mover_special_turn_number;
     }
+
+     */
 
 }
