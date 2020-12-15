@@ -206,6 +206,45 @@ public class Board {
         }
     }
 
+    /*
+    - returns 1:
+      - if input_piece @ [x,y] is on a square that matches the dest pos of a legal move of the opponent
+    - returns 0: otherwise
+
+     */
+    public int underThreat(int x, int y) {
+
+        Piece input_piece = this.board.get(x).get(y);
+        int opposite_player = (input_piece.getPlayer() == 0) ? 1 : 0;
+        for (List<List<Integer>> legal_opponent_move : this.getAllLegalMoves(opposite_player)) {
+            if (legal_opponent_move.get(1).equals(input_piece.getPosition())) {
+            //if (legal_opponent_move.get(1).get(0) == input_piece.getPosition().get(0) &&
+            //        legal_opponent_move.get(1).get(1) == input_piece.getPosition().get(1)) {
+                //System.out.println(legal_opponent_move.get(1));
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    public int nonPawnUnderThreat(int x, int y) {
+        Piece input_piece = this.board.get(x).get(y);
+        String character = input_piece.getCharacter();
+        if (character.equals("pa")) {
+            return 0;
+        }
+        int opposite_player = (input_piece.getPlayer() == 0) ? 1 : 0;
+        for (List<List<Integer>> legal_opponent_move : this.getAllLegalMoves(opposite_player)) {
+            if (legal_opponent_move.get(1).equals(input_piece.getPosition())) {
+                //if (legal_opponent_move.get(1).get(0) == input_piece.getPosition().get(0) &&
+                //        legal_opponent_move.get(1).get(1) == input_piece.getPosition().get(1)) {
+                //System.out.println(legal_opponent_move.get(1));
+                return 1;
+            }
+        }
+        return 0;
+    }
+
 
     // *** VALIDATED
     private void boardPlace(List<Integer> position, Piece piece) {

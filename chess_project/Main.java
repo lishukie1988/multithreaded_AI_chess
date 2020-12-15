@@ -37,7 +37,8 @@ public class Main {
         //testGetAIMoveOnePawn();
         //testGetAIMoveOnlyKing();
         //testGetUserInput();
-        testGetUserMove();
+        testPlayGame();
+        //testUnderThreat();
 
     }
 
@@ -2015,11 +2016,111 @@ public class Main {
 
     }
 
-    public static void testGetUserMove() {
+    public static void testPlayGame() {
 
         Game new_game = new Game();
         //System.out.println(new_game.getUserMove());
         new_game.playGame();
+
+    }
+
+    public static void testUnderThreat() {
+
+        Board new_board = new Board();
+
+        setupRemove(new_board, 4, 6);
+        // when white pawn moves from (5,6) to (5,<6) instead of (5,6), removes black pawn @ (5,<6) in the process
+        // (5,6) is empty ONLY AFTER the MOVE BELOW, it is STILL OCCUPIED @ THIS POINT of EXECUTION
+        //new_board.displayBoard();
+
+
+
+        setupMove(new_board, 0,1,3,3);
+        ((Pawn)new_board.getBoard().get(3).get(3)).setMoved(1);
+        setupMove(new_board, 2,6,2,4);
+        ((Pawn)new_board.getBoard().get(2).get(4)).setMoved(1);
+        ((Pawn)new_board.getBoard().get(2).get(4)).setSpecialTurnNumber(0);
+        setupMove(new_board, 6,1,6,4);
+        ((Pawn)new_board.getBoard().get(6).get(4)).setMoved(1);
+
+
+        setupMove(new_board, 5,6,4,3);
+        //((Pawn)new_board.getBoard().get(4).get(3)).setSpecialTurnNumber(0);
+        ((Pawn)new_board.getBoard().get(4).get(3)).setMoved(1);
+
+        setupMove(new_board, 4,1,5,6);
+        ((Pawn)new_board.getBoard().get(5).get(6)).setMoved(1);
+
+        setupMove(new_board, 7,1,7,2);
+        ((Pawn)new_board.getBoard().get(7).get(2)).setMoved(1);
+        setupMove(new_board, 1,1,1,3);
+        ((Pawn)new_board.getBoard().get(1).get(3)).setSpecialTurnNumber(0);
+        ((Pawn)new_board.getBoard().get(1).get(3)).setMoved(1);
+        setupMove(new_board, 0,6,0,3);
+        ((Pawn)new_board.getBoard().get(0).get(3)).setMoved(1);
+
+
+        new_board.displayBoard();
+
+        System.out.println("white: " + new_board.getPlayerPieces(0).size());
+        System.out.println("black: " + new_board.getPlayerPieces(1).size());
+
+
+
+        //System.out.println("Pawn @ (1,1): ");
+        //List<List<List<Integer>>> theoretic_moves3 = new_board.getBoard().get(1).get(1).getTheoreticMoves(new_board);
+        //System.out.println(theoretic_moves3 + "len: " + theoretic_moves3.size());
+
+        System.out.println("Pawn @ (3,3): ");
+        List<List<List<Integer>>> theoretic_moves = new_board.getBoard().get(3).get(3).getLegalMoves(new_board);
+        System.out.println(theoretic_moves + "len: " + theoretic_moves.size());
+
+        //System.out.println("Pawn @ (4,6): ");
+        //List<List<List<Integer>>> theoretic_moves1 = new_board.getBoard().get(4).get(6).getLegalMoves(new_board);
+        //System.out.println(theoretic_moves1 + "len: " + theoretic_moves1.size());
+
+        System.out.println("Pawn @ (3,1): ");
+        List<List<List<Integer>>> theoretic_moves2 = new_board.getBoard().get(3).get(1).getLegalMoves(new_board);
+        System.out.println(theoretic_moves2 + "len: " + theoretic_moves2.size());
+
+        System.out.println("Pawn @ (6,4): ");
+        List<List<List<Integer>>> theoretic_moves4 = new_board.getBoard().get(6).get(4).getLegalMoves(new_board);
+        System.out.println(theoretic_moves4 + "len: " + theoretic_moves4.size());
+
+        System.out.println("Pawn @ (7,2): ");
+        List<List<List<Integer>>> theoretic_moves5 = new_board.getBoard().get(7).get(2).getLegalMoves(new_board);
+        System.out.println(theoretic_moves5 + "len: " + theoretic_moves5.size());
+
+        //System.out.println("Pawn @ (0,6): ");
+        //List<List<List<Integer>>> theoretic_moves6 = new_board.getBoard().get(0).get(6).getTheoreticMoves(new_board);
+        //System.out.println(theoretic_moves6 + "len: " + theoretic_moves6.size());
+
+        System.out.println("Pawn @ (2,4): ");
+        List<List<List<Integer>>> theoretic_moves7 = new_board.getBoard().get(2).get(4).getLegalMoves(new_board);
+        System.out.println(theoretic_moves7 + "len: " + theoretic_moves7.size());
+
+        System.out.println("Pawn @ (0,3): ");
+        List<List<List<Integer>>> theoretic_moves8 = new_board.getBoard().get(0).get(3).getLegalMoves(new_board);
+        System.out.println(theoretic_moves8 + "len: " + theoretic_moves8.size());
+
+        System.out.println("Pawn @ (1,3): ");
+        List<List<List<Integer>>> theoretic_moves9 = new_board.getBoard().get(1).get(3).getLegalMoves(new_board);
+        System.out.println(theoretic_moves9 + "len: " + theoretic_moves9.size());
+
+        System.out.println("Pawn @ (3,6): ");
+        List<List<List<Integer>>> theoretic_moves10 = new_board.getBoard().get(3).get(6).getLegalMoves(new_board);
+        System.out.println(theoretic_moves10 + "len: " + theoretic_moves10.size());
+
+        System.out.println("Pawn @ (6,6): ");
+        List<List<List<Integer>>> theoretic_moves11 = new_board.getBoard().get(6).get(6).getLegalMoves(new_board);
+        System.out.println(theoretic_moves11 + "len: " + theoretic_moves11.size());
+
+
+        System.out.println("Under threat (A4):");
+        System.out.println(new_board.underThreat(0, 3));
+
+        System.out.println("Under threat (A1):");
+        System.out.println(new_board.underThreat(0, 0));
 
     }
 

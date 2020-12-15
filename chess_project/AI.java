@@ -12,7 +12,7 @@ public class AI {
         int max_recursion = 0;
         do {
 
-            //System.out.println("calling getAIMoveMaxRecursion with max_recursion = " + max_recursion);
+            System.out.println("calling getAIMoveMaxRecursion with max_recursion = " + max_recursion);
             fetched_move = getAIMoveMaxRecursion(null, 0, max_recursion, input_board);
             max_recursion++;
         }
@@ -33,11 +33,16 @@ public class AI {
         for (List<List<Integer>> move : legal_moves) {
             // make mock move with static ai method in ai class
             // returns a ReverseMove object
+
             ReverseMove reverse_move = aIMockMove(move, input_board);
-            if (input_board.inCheck(0) == 1) {
+            int dest_under_threat = input_board.nonPawnUnderThreat(move.get(1).get(0), move.get(1).get(1));
+
+            if (dest_under_threat == 0 && (input_board.inCheck(0) == 1)) {
+                //System.out.println(move.get(1));
+                //System.out.println(input_board.getAllLegalMoves(0));
                 aiReverseMockMove(reverse_move, input_board);
-                System.out.println("move number: " + (current_recursion + 1) + " !in check!");
-                System.out.println(move);
+                //System.out.println("move number: " + (current_recursion + 1) + " !in check!");
+                //System.out.println(move);
                 if (root_move == null) {
                     return move;
                 } else {
@@ -45,7 +50,13 @@ public class AI {
                 }
             }
             // else if player 0 not in check after current ai mock move
-            else if (current_recursion < max_recursion) {
+
+            else if (dest_under_threat == 0 && current_recursion < max_recursion) {
+                //input_board.underThreat(move.get(1).get(0), move.get(1).get(1));
+                //System.out.println("before recursing current move to the next level: ");
+                //System.out.println(move.get(1));
+                //System.out.println("piece @ move[1] = ");
+                //System.out.println(input_board.getBoard().get(move.get(1).get(0)).get(move.get(1).get(1)));
 
                 //System.out.println(move);
 
@@ -59,11 +70,13 @@ public class AI {
                 aiReverseMockMove(reverse_move, input_board);
 
                 if (fetched_move != null) {
-                    System.out.println("move number: " + (current_recursion + 1));
-                    System.out.println(move);
+                    //System.out.println("move number: " + (current_recursion + 1));
+                    //System.out.println(move);
                     return fetched_move; // == root_move
                 }
-            } else if (current_recursion == max_recursion) {
+
+                //} else if (current_recursion == max_recursion) {
+            } else {
                 aiReverseMockMove(reverse_move, input_board);
             }
         }
