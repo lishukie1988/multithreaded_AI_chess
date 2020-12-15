@@ -93,23 +93,23 @@ public class AI {
     private static void aiReverseMockMove(ReverseMove reverse_move, Board input_board) {
 
         // normal mock move
-        if (reverse_move.mock_move.size() == 2) {
+        if (reverse_move.getMockMove().size() == 2) {
             aiReverseMockNormalMove(reverse_move, input_board);
         }
         // castling mock move
-        else if (reverse_move.mock_move.get(2).get(0) == 0 || reverse_move.mock_move.get(2).get(0) == 1) {
+        else if (reverse_move.getMockMove().get(2).get(0) == 0 || reverse_move.mock_move.get(2).get(0) == 1) {
             aiReverseMockCastlingMove(reverse_move, input_board);
         }
         // en passant mock move
-        else if (reverse_move.mock_move.get(2).get(0) == 3) {
+        else if (reverse_move.getMockMove().get(2).get(0) == 3) {
             aiReverseMockEnPassantMove(reverse_move, input_board);
         }
         // two square mock move
-        else if (reverse_move.mock_move.get(2).get(0) == 4) {
+        else if (reverse_move.getMockMove().get(2).get(0) == 4) {
             aiReverseMockTwoSquareMove(reverse_move, input_board);
         }
         // promotion mock move
-        else if (reverse_move.mock_move.get(2).get(0) == 2) {
+        else if (reverse_move.getMockMove().get(2).get(0) == 2) {
             aiReverseMockPromotionMove(reverse_move, input_board);
         }
     }
@@ -143,19 +143,19 @@ public class AI {
 
     private static void aiReverseMockNormalMove(ReverseMove reverse_move, Board input_board) {
 
-        Piece mover_piece = input_board.move(reverse_move.mock_move.get(1), reverse_move.mock_move.get(0));
-        input_board.place(reverse_move.mock_move.get(1), reverse_move.captured_piece);
+        Piece mover_piece = input_board.move(reverse_move.getMockMove().get(1), reverse_move.getMockMove().get(0));
+        input_board.place(reverse_move.getMockMove().get(1), reverse_move.getCapturedPiece());
         String character = mover_piece.getCharacter();
         switch(character)
         {
             case "ro":
-                ((Rook) mover_piece).setMoved(reverse_move.mover_moved);
+                ((Rook) mover_piece).setMoved(reverse_move.getMoverMoved());
                 break;
             case "ki":
-                ((King) mover_piece).setMoved(reverse_move.mover_moved);
+                ((King) mover_piece).setMoved(reverse_move.getMoverMoved());
                 break;
             case "pa":
-                ((Pawn) mover_piece).setMoved(reverse_move.mover_moved);
+                ((Pawn) mover_piece).setMoved(reverse_move.getMoverMoved());
                 break;
         }
         input_board.decreaseTurnNumber();
@@ -173,8 +173,8 @@ public class AI {
 
     private static void aiReverseMockCastlingMove(ReverseMove reverse_move, Board input_board) {
 
-        Piece king = input_board.move(reverse_move.mock_move.get(1), reverse_move.mock_move.get(0));
-        Piece rook = input_board.move(reverse_move.mock_move.get(4), reverse_move.mock_move.get(3));
+        Piece king = input_board.move(reverse_move.getMockMove().get(1), reverse_move.getMockMove().get(0));
+        Piece rook = input_board.move(reverse_move.getMockMove().get(4), reverse_move.getMockMove().get(3));
         ((King) king).setMoved(1);
         ((Rook) rook).setMoved(1);
         input_board.decreaseTurnNumber();
@@ -193,11 +193,34 @@ public class AI {
 
     private static void aiReverseMockEnPassantMove(ReverseMove reverse_move, Board input_board) {
 
-        Piece player_pawn = input_board.move(reverse_move.mock_move.get(1), reverse_move.mock_move.get(0));
-        input_board.place(reverse_move.mock_move.get(3), reverse_move.captured_piece);
+        Piece player_pawn = input_board.move(reverse_move.getMockMove().get(1), reverse_move.getMockMove().get(0));
+        input_board.place(reverse_move.getMockMove().get(3), reverse_move.getCapturedPiece());
         input_board.decreaseTurnNumber();
 
     }
+
+
+    private static ReverseMove aiMockPromotionMove(List<List<Integer>> promotion_move, Board input_board) {
+
+        Piece player_pawn = input_board.getBoard().get(promotion_move.get(0).get(0)).get(promotion_move.get(0).get(1));
+        Piece dest_piece = input_board.getBoard().get(promotion_move.get(1).get(0)).get(promotion_move.get(1).get(1));
+        ReverseMove reverse_move = new ReverseMove(promotion_move, player_pawn, dest_piece);
+        input_board.promotionMoveAI(promotion_move);
+        input_board.increaseTurnNumber();
+        return reverse_move;
+
+    }
+
+
+    private static void aiReverseMockPromotionMove(ReverseMove reverse_move, Board input_board) {
+
+        input_board.remove(reverse_move.getMockMove().get(1));
+        input_board.place(reverse_move.getMockMove().get(1), reverse_move.getCapturedPiece());
+        input_board.place(reverse_move.getMockMove().get(0), reverse_move.getMoverPiece());
+        input_board.decreaseTurnNumber();
+
+    }
+
 
 
 

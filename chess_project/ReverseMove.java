@@ -6,11 +6,11 @@ import java.util.*;
 
 public class ReverseMove {
 
-    List<List<Integer>> mock_move = null;
-    Piece mover_piece = null;
-    Piece captured_piece = null;
-    int mover_moved = -99;
-    int mover_special_turn_number = -99;
+    private List<List<Integer>> mock_move = null;
+    private Piece mover_piece = null;
+    private Piece captured_piece = null;
+    private int mover_moved = -99;
+    private int mover_special_turn_number = -99;
 
     // constructor for normal type ReverseMove object
     public ReverseMove(List<List<Integer>> normal_move, int backup_mover_moved, Piece dest_piece) {
@@ -37,6 +37,26 @@ public class ReverseMove {
         this.mock_move = promotion_move;
         this.captured_piece = captured_piece;
         this.mover_piece = player_pawn;
+    }
+
+    public List<List<Integer>> getMockMove() {
+        return this.mock_move;
+    }
+
+    public Piece getMoverPiece() {
+        return this.mover_piece;
+    }
+
+    public Piece getCapturedPiece() {
+        return this.captured_piece;
+    }
+
+    public int getMoverMoved() {
+        return this.mover_moved;
+    }
+
+    public int getMoverSpecialTurnNumber() {
+        return this.mover_special_turn_number;
     }
 
 }
