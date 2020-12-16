@@ -4,6 +4,8 @@ import chess_project.pieces.*;
 import java.nio.file.LinkPermission;
 import java.util.*;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class Main {
 
     public static void main(String[] arg) {
@@ -37,8 +39,10 @@ public class Main {
         //testGetAIMoveOnePawn();
         //testGetAIMoveOnlyKing();
         //testGetUserInput();
-        testPlayGame();
+        //testPlayGame();
         //testUnderThreat();
+        testAIThreadSample();
+
 
     }
 
@@ -1464,7 +1468,7 @@ public class Main {
 
     }
 
-    public static void testGetAIMoveNewBoard() {
+    public static int testGetAIMoveNewBoard() {
 
         Board new_board = new Board();
 
@@ -1537,6 +1541,8 @@ public class Main {
         System.out.println(all_legal_moves2 + "len: " + all_legal_moves2.size());
 
          */
+
+        return 1;
 
     }
 
@@ -2127,7 +2133,6 @@ public class Main {
 
     }
 
-
     public static void setupMove(Board input_board, int start_x, int start_y, int dest_x, int dest_y) {
         List<List<Integer>> move_positions = new ArrayList<>(2);
         List<Integer> start_pos = new ArrayList<>(2);
@@ -2149,5 +2154,40 @@ public class Main {
     }
 
 
+    public static void testAIThreadSample() {
+
+        // creating objects t1 of MyThread
+        AIThreadSample t1 = new AIThreadSample();
+
+
+        int x = 0;
+        while (x < 99999) {
+            x++;
+        }
+        //t1.t.interrupt();
+
+
+
+        /*
+        try {
+            Thread.sleep(1);
+
+            // t1 is an object of MyThread
+            // which has an object t
+            // which is of type Thread
+            t1.t.interrupt();
+
+            Thread.sleep(5);
+        }
+        catch (InterruptedException e) {
+            System.out.println("Caught:" + e);
+        }
+
+
+         */
+
+        System.out.println("Exiting the main Thread");
+
+    }
 
 }
