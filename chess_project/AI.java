@@ -34,10 +34,15 @@ public class AI {
             // make mock move with static ai method in ai class
             // returns a ReverseMove object
 
+            // *
+            int start_under_threat = input_board.nonPawnUnderThreat(move.get(0).get(0), move.get(0).get(1));
+
             ReverseMove reverse_move = aIMockMove(move, input_board);
+
             int dest_under_threat = input_board.nonPawnUnderThreat(move.get(1).get(0), move.get(1).get(1));
 
-            if (dest_under_threat == 0 && (input_board.inCheck(0) == 1)) {
+            // *
+            if ( (start_under_threat == 1 && dest_under_threat == 0) || (dest_under_threat == 0 && input_board.inCheck(0) == 1)) {
                 //System.out.println(move.get(1));
                 //System.out.println(input_board.getAllLegalMoves(0));
                 aiReverseMockMove(reverse_move, input_board);
@@ -49,6 +54,7 @@ public class AI {
                     return root_move;
                 }
             }
+
             // else if player 0 not in check after current ai mock move
 
             else if (dest_under_threat == 0 && current_recursion < max_recursion) {
