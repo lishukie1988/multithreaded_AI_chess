@@ -1487,8 +1487,8 @@ public class Main {
         List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(1);
         System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
 
-
-        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+        List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves);
 
         System.out.println("fetched ai move with max recursion depth = 0: ");
         System.out.println(fetched_ai_move);
@@ -1567,8 +1567,8 @@ public class Main {
         List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(1);
         System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
 
-
-        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+        List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves);
 
         System.out.println("fetched ai move with max recursion depth = 0: ");
         System.out.println(fetched_ai_move);
@@ -1648,12 +1648,14 @@ public class Main {
 
          */
 
+
         System.out.println("All legal moves of player black: ");
         List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(1);
         System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
 
 
-        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+        List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves);
 
         System.out.println("fetched ai move with max recursion depth = 0: ");
         System.out.println(fetched_ai_move);
@@ -1741,7 +1743,8 @@ public class Main {
         System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
 
 
-        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+        List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves);
 
         System.out.println("fetched ai move with max recursion depth = 0: ");
         System.out.println(fetched_ai_move);
@@ -1841,8 +1844,8 @@ public class Main {
         List<List<List<Integer>>> all_legal_moves = new_board.getAllLegalMoves(1);
         System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
 
-
-        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board);
+        List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves);
 
         System.out.println("fetched ai move with max recursion depth = 0: ");
         System.out.println(fetched_ai_move);

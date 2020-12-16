@@ -9,35 +9,53 @@ public class AI {
     public static List<List<Integer>> getAIMove(Board input_board) {
 
         List<List<Integer>> fetched_move = null;
+        List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
         int max_recursion = 0;
         do {
 
             System.out.println("calling getAIMoveMaxRecursion with max_recursion = " + max_recursion);
-            fetched_move = getAIMoveMaxRecursion(null, 0, max_recursion, input_board);
+            fetched_move = getAIMoveMaxRecursion(null, 0, max_recursion, input_board, safe_dest_moves);
             max_recursion++;
         }
         while (max_recursion < 8 && fetched_move == null);
 
         if (fetched_move == null) {
-            fetched_move = input_board.getAllLegalMoves(1).get(0);
+            if (safe_dest_moves.size() != 0) {
+                fetched_move = safe_dest_moves.get(0);
+            }
+            else {
+                fetched_move = input_board.getAllLegalMoves(1).get(0);
+            }
         }
+
+        System.out.println("safe dest moves: " );
+        System.out.println(safe_dest_moves);
 
         return fetched_move;
 
     }
 
     // TEMPORARILY PUBLIC, set back to PRIVATE LATER
-    public static List<List<Integer>> getAIMoveMaxRecursion(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board) {
+    public static List<List<Integer>> getAIMoveMaxRecursion(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board, List<List<List<Integer>>> safe_dest_moves) {
         //System.out.println("current recursion depth: " + current_recursion);
         List<List<List<Integer>>> legal_moves = input_board.getAllLegalMoves(1);
         for (List<List<Integer>> move : legal_moves) {
             // make mock move with static ai method in ai class
             // returns a ReverseMove object
 
+            // *
+            int start_under_threat = input_board.nonPawnUnderThreat(move.get(0).get(0), move.get(0).get(1));
+
             ReverseMove reverse_move = aIMockMove(move, input_board);
+
             int dest_under_threat = input_board.nonPawnUnderThreat(move.get(1).get(0), move.get(1).get(1));
 
-            if (dest_under_threat == 0 && (input_board.inCheck(0) == 1)) {
+            if (root_move == null && dest_under_threat == 0) {
+                safe_dest_moves.add(move);
+            }
+
+            // *
+            if ( (start_under_threat == 1 && dest_under_threat == 0) || (dest_under_threat == 0 && input_board.inCheck(0) == 1)) {
                 //System.out.println(move.get(1));
                 //System.out.println(input_board.getAllLegalMoves(0));
                 aiReverseMockMove(reverse_move, input_board);
@@ -49,6 +67,7 @@ public class AI {
                     return root_move;
                 }
             }
+
             // else if player 0 not in check after current ai mock move
 
             else if (dest_under_threat == 0 && current_recursion < max_recursion) {
@@ -62,9 +81,9 @@ public class AI {
 
                 List<List<Integer>> fetched_move;
                 if (root_move == null) {
-                    fetched_move = getAIMoveMaxRecursion(move, current_recursion + 1, max_recursion, input_board);
+                    fetched_move = getAIMoveMaxRecursion(move, current_recursion + 1, max_recursion, input_board, safe_dest_moves);
                 } else {
-                    fetched_move = getAIMoveMaxRecursion(root_move, current_recursion + 1, max_recursion, input_board);
+                    fetched_move = getAIMoveMaxRecursion(root_move, current_recursion + 1, max_recursion, input_board, safe_dest_moves);
                 }
 
                 aiReverseMockMove(reverse_move, input_board);
