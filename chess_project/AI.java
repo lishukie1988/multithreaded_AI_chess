@@ -143,7 +143,7 @@ public class AI {
 
     }
 
-    public static List<List<Integer>> getAIMoveMTSample(Board input_board) {
+    private static List<List<Integer>> getAIMoveMTSample(Board input_board) {
 
         List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
         List<List<List<Integer>>> sample_list = new ArrayList<>();
@@ -199,12 +199,13 @@ public class AI {
             // make mock move with static ai method in ai class
             // returns a ReverseMove object
 
-            // *
-            int start_under_threat = input_board.nonPawnUnderThreat(move.get(0).get(0), move.get(0).get(1));
+            // *** CHANGED TO UNDERTHREAT FROM NONPAWNUNDERTHREAT
+            int start_under_threat = input_board.underThreat(move.get(0).get(0), move.get(0).get(1));
 
             ReverseMove reverse_move = aIMockMove(move, input_board);
 
-            int dest_under_threat = input_board.nonPawnUnderThreat(move.get(1).get(0), move.get(1).get(1));
+            // *** CHANGED TO UNDERTHREAT FROM NONPAWNUNDERTHREAT
+            int dest_under_threat = input_board.underThreat(move.get(1).get(0), move.get(1).get(1));
 
             if (root_move == null && dest_under_threat == 0) {
                 safe_dest_moves.add(move);

@@ -2356,7 +2356,7 @@ public class Main {
 
         Board new_board = new Board();
         System.out.println("@ Main");
-        System.out.println(AI.getAIMoveMTSample(new_board));
+        //System.out.println(AI.getAIMoveMTSample(new_board));
         System.out.println("@ Main after fetched move displayed");
 
 
