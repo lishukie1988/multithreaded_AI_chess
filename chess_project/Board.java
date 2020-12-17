@@ -195,7 +195,7 @@ public class Board {
                 if (current_piece != null) {
                     if (current_piece.getPosition().equals(black_move) || current_piece.getPosition().equals(white_move)) {
                         String current_player = (current_piece.getPlayer() == 1) ? "B" : "W";
-                        System.out.printf("((" + current_player + " " + current_piece.getCharacter() + "))");
+                        System.out.printf("*(" + current_player + " " + current_piece.getCharacter() + ")*");
 
                     }
                     else {

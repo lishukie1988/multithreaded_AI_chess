@@ -98,7 +98,7 @@ public class Game {
         }
         else { // if AI (black)
             System.out.println("Black is coming up with a move, please wait!");
-            chosen_move = AI.getAIMove(this.chess_board);
+            chosen_move = AI.getAIMoveMT(this.chess_board);
             //chosen_move = AI.getAIMoveMT(this.chess_board);
         }
 
