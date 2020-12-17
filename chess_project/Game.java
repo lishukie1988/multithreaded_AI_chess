@@ -97,7 +97,8 @@ public class Game {
             chosen_move = this.getUserMove();
         }
         else { // if AI (black)
-            chosen_move = AI.getAIMove(this.chess_board);
+            //chosen_move = AI.getAIMove(this.chess_board);
+            chosen_move = AI.getAIMoveMT(this.chess_board);
         }
 
         return chosen_move;
@@ -131,6 +132,8 @@ public class Game {
       - dest pos doesn't contain player's own piece
      */
     private List<List<Integer>> validateUserMoveLegal(List<List<Integer>> input_indexes) {
+        System.out.println(input_indexes);
+        System.out.println(this.chess_board.getAllLegalMoves(0));
         for (List<List<Integer>> legal_move : this.chess_board.getAllLegalMoves(0)) {
             if (legal_move.get(0).equals(input_indexes.get(0)) && legal_move.get(1).equals(input_indexes.get(1))) {
                 return legal_move;
@@ -262,6 +265,23 @@ public class Game {
         return index_pair;
     }
 
+    // change back to PRIVTE
+    // param: List<Integer> index
+    public String indexToString(List<Integer> index) {
+        String result = "aa";
+        char[] result_chars = result.toCharArray();
+        int x_cord = index.get(0);
+        x_cord += 97;
+        result_chars[0] = (char) x_cord;
+
+        int y_cord = index.get(1);
+        y_cord += 49;
+        result_chars[1] = (char) y_cord;
+
+        String result_string = String.valueOf(result_chars);
+        return result_string;
+    }
+
     /*
     - makes move to this.chess_board
     - updates this.player_turn
@@ -269,6 +289,11 @@ public class Game {
     private void makeGameMove(List<List<Integer>> move) {
 
         this.chess_board.makeMove(move);
+        if (player_turn == 1) {
+            String start = this.indexToString(move.get(0));
+            String dest = this.indexToString(move.get(1));
+            System.out.println("Black moved from " + start + " to " + dest + "!");
+        }
         this.player_turn = (this.player_turn == 0) ? 1: 0;
 
     }
@@ -348,6 +373,7 @@ public class Game {
         while (this.game_state.equals("active")) {
             this.chess_board.displayBoard();
             this.nextTurn();
+            System.out.println(this.chess_board.getAllLegalMoves(this.player_turn));
         }
 
     }

@@ -13,7 +13,7 @@ public class AI {
         int max_recursion = 0;
         do {
 
-            System.out.println("calling getAIMoveMaxRecursion with max_recursion = " + max_recursion);
+            //System.out.println("calling getAIMoveMaxRecursion with max_recursion = " + max_recursion);
             fetched_move = getAIMoveMaxRecursion(null, 0, max_recursion, input_board, safe_dest_moves);
             max_recursion++;
         }
@@ -28,15 +28,241 @@ public class AI {
             }
         }
 
-        System.out.println("safe dest moves: " );
-        System.out.println(safe_dest_moves);
+        //System.out.println("safe dest moves: " );
+        //System.out.println(safe_dest_moves);
 
         return fetched_move;
 
     }
 
+
+    public static List<List<Integer>> getAIMoveMT(Board input_board) {
+
+
+        List<Thread> started_threads = new ArrayList<>();
+
+        List<List<Integer>> fetched_move = null;
+        List<List<List<Integer>>> fetched_moves_list = new ArrayList<>();
+        List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
+        //int max_recursion = 0;
+
+
+        for (int max_recursion = 0; max_recursion < 7; max_recursion++) {
+
+            Board cloned = input_board.cloneBoard();
+            SampleAIJoinedThread obj = new SampleAIJoinedThread(max_recursion, cloned, fetched_moves_list, safe_dest_moves);
+            Thread thread_x = new Thread(obj);
+            thread_x.start();
+            started_threads.add(thread_x);
+
+        }
+
+        //System.out.println("Size of fetched_moves_list");
+        //System.out.println(fetched_moves_list.size());
+
+        // if fetched_moves_list is null & ai needs to resort to a safe_dest_move / legal_move
+        // - ai would get stuck at below while loop
+        /*
+        while (fetched_moves_list.size() == 0) {
+            //System.out.println("fetched_moves_list empty");
+
+
+            try
+            {
+                Thread.sleep(100);
+                //System.out.println("fetched_moves_list still empty");
+            }
+            catch(Exception ex)
+            {
+            }
+        }
+
+         */
+
+        int current_unjoined_thread = 0;
+
+        for (int x = 0; x < 7; x++) {
+            System.out.println("Joining thread " + x );
+            try {
+                started_threads.get(x).join();
+                current_unjoined_thread = x + 1;
+            }
+            catch (Exception ex) {
+            }
+            if (fetched_moves_list.size() != 0) {
+                break;
+            }
+        }
+
+        try
+        {
+            for (int x = current_unjoined_thread; x < 7; x++) {
+                System.out.println("Interrupting thread " + x);
+                started_threads.get(x).interrupt();
+            }
+        }
+        catch(Exception ex)
+        {
+        }
+
+        //System.out.println("after early termination of all remaining threads: fetched_moves_list:");
+        //System.out.println(fetched_moves_list);
+
+
+        /*
+        do {
+
+            System.out.println("calling getAIMoveMaxRecursion with max_recursion = " + max_recursion);
+            fetched_move = getAIMoveMaxRecursion(null, 0, max_recursion, input_board, safe_dest_moves);
+            max_recursion++;
+        }
+        while (max_recursion < 8 && fetched_move == null);
+
+         */
+
+        if (fetched_moves_list.size() != 0) {
+            fetched_move = fetched_moves_list.get(0);
+        }
+
+        else {
+            if (safe_dest_moves.size() != 0) {
+                fetched_move = safe_dest_moves.get(0);
+            }
+            else {
+                fetched_move = input_board.getAllLegalMoves(1).get(0);
+            }
+        }
+
+        System.out.println("Reached return fetched_move");
+
+
+        //System.out.println("safe dest moves: " );
+        //System.out.println(safe_dest_moves);
+
+        return fetched_move;
+
+    }
+
+    public static List<List<Integer>> getAIMoveMTSample(Board input_board) {
+
+        List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
+        List<List<List<Integer>>> sample_list = new ArrayList<>();
+        List<Thread> started_threads = new ArrayList<>();
+        Board new_board = new Board();
+
+
+        for (int x = 0; x < 5; x++) {
+
+            Board cloned = input_board.cloneBoard();
+            SampleAIJoinedThread obj = new SampleAIJoinedThread(x, cloned, sample_list, safe_dest_moves);
+            Thread thread_x = new Thread(obj);
+            thread_x.start();
+            started_threads.add(thread_x);
+
+        }
+
+        while (sample_list.size() < 1) {
+            try
+            {
+                Thread.sleep(100);
+            }
+            catch(Exception ex)
+            {
+            }
+        }
+
+        try
+        {
+            for (int x = 0; x < 5; x++) {
+                started_threads.get(x).interrupt();
+            }
+        }
+        catch(Exception ex)
+        {
+        }
+
+
+
+        //System.out.println("This code is outside of the thread");
+        //System.out.println(sample_list);
+
+        return sample_list.get(0);
+
+
+    }
+
     // TEMPORARILY PUBLIC, set back to PRIVATE LATER
     public static List<List<Integer>> getAIMoveMaxRecursion(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board, List<List<List<Integer>>> safe_dest_moves) {
+        //System.out.println("current recursion depth: " + current_recursion);
+        List<List<List<Integer>>> legal_moves = input_board.getAllLegalMoves(1);
+        for (List<List<Integer>> move : legal_moves) {
+            // make mock move with static ai method in ai class
+            // returns a ReverseMove object
+
+            // *
+            int start_under_threat = input_board.nonPawnUnderThreat(move.get(0).get(0), move.get(0).get(1));
+
+            ReverseMove reverse_move = aIMockMove(move, input_board);
+
+            int dest_under_threat = input_board.nonPawnUnderThreat(move.get(1).get(0), move.get(1).get(1));
+
+            if (root_move == null && dest_under_threat == 0) {
+                safe_dest_moves.add(move);
+            }
+
+            // *
+            if ( (start_under_threat == 1 && dest_under_threat == 0) || (dest_under_threat == 0 && input_board.inCheck(0) == 1)) {
+                //System.out.println(move.get(1));
+                //System.out.println(input_board.getAllLegalMoves(0));
+                aiReverseMockMove(reverse_move, input_board);
+                //System.out.println("move number: " + (current_recursion + 1) + " !in check!");
+                //System.out.println(move);
+                if (root_move == null) {
+                    return move;
+                } else {
+                    return root_move;
+                }
+            }
+
+            // else if player 0 not in check after current ai mock move
+
+            else if (dest_under_threat == 0 && current_recursion < max_recursion) {
+                //input_board.underThreat(move.get(1).get(0), move.get(1).get(1));
+                //System.out.println("before recursing current move to the next level: ");
+                //System.out.println(move.get(1));
+                //System.out.println("piece @ move[1] = ");
+                //System.out.println(input_board.getBoard().get(move.get(1).get(0)).get(move.get(1).get(1)));
+
+                //System.out.println(move);
+
+                List<List<Integer>> fetched_move;
+                if (root_move == null) {
+                    fetched_move = getAIMoveMaxRecursion(move, current_recursion + 1, max_recursion, input_board, safe_dest_moves);
+                } else {
+                    fetched_move = getAIMoveMaxRecursion(root_move, current_recursion + 1, max_recursion, input_board, safe_dest_moves);
+                }
+
+                aiReverseMockMove(reverse_move, input_board);
+
+                if (fetched_move != null) {
+                    //System.out.println("move number: " + (current_recursion + 1));
+                    //System.out.println(move);
+                    return fetched_move; // == root_move
+                }
+
+                //} else if (current_recursion == max_recursion) {
+            } else {
+                aiReverseMockMove(reverse_move, input_board);
+            }
+        }
+
+        // if no in-check resulting root move is found within provided max recursion level
+        return null;
+
+    }
+
+    // TEMPORARILY PUBLIC, set back to PRIVATE LATER
+    public static List<List<Integer>> getAIMoveMaxRecursionMT(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board, List<List<List<Integer>>> safe_dest_moves) {
         //System.out.println("current recursion depth: " + current_recursion);
         List<List<List<Integer>>> legal_moves = input_board.getAllLegalMoves(1);
         for (List<List<Integer>> move : legal_moves) {

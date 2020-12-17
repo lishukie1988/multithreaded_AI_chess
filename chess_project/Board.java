@@ -77,6 +77,75 @@ public class Board {
         }
     }
 
+    public Board (int empty) {
+
+        ArrayList<Piece> black_pieces = new ArrayList<Piece>(15);
+        ArrayList<Piece> white_pieces = new ArrayList<Piece>(15);
+        ArrayList<Piece> black_king = new ArrayList<>(1);
+        ArrayList<Piece> white_king = new ArrayList<>(1);
+        this.player_pieces.put(0, white_pieces);
+        this.player_pieces.put(1, black_pieces);
+        this.player_pieces.put(2, white_king);
+        this.player_pieces.put(3, black_king);
+
+        for (int x = 0; x < 8; x++) {
+            ArrayList<Piece> new_row = new ArrayList<Piece>(8);
+            for (int y = 0; y < 8; y++ ) {
+                new_row.add(null);
+            }
+            this.board.add(new_row);
+        }
+
+    }
+
+    public Board cloneBoard() {
+
+        Board cloned_board = new Board(0);
+        cloned_board.setTurnNumber(this.getTurnNumber());
+        for (int player = 0; player < 2; player++) {
+            for (Piece piece : this.player_pieces.get(player)) {
+                String character = piece.getCharacter();
+                int this_player = piece.getPlayer();
+                int x_axis = piece.getPosition().get(0);
+                int y_axis = piece.getPosition().get(1);
+
+                switch (character) {
+                    case "ro":
+                        Piece new_rook = new Rook(this_player, x_axis, y_axis);
+                        ((Rook) new_rook).setMoved(((Rook) piece).getMoved());
+                        ((Rook) new_rook).setOriginal(((Rook) piece).getOriginal());
+                        cloned_board.place(new_rook.getPosition(), new_rook);
+                        break;
+                    case "ki":
+                        Piece new_king = new King(this_player, x_axis, y_axis);
+                        ((King) new_king).setMoved(((King) piece).getMoved());
+                        cloned_board.place(new_king.getPosition(), new_king);
+                        cloned_board.getPlayerPieces(player + 2).add(new_king);
+                        break;
+                    case "pa":
+                        Piece new_pawn = new Pawn(this_player, x_axis, y_axis);
+                        ((Pawn) new_pawn).setMoved(((Pawn) piece).getMoved());
+                        ((Pawn) new_pawn).setSpecialTurnNumber(((Pawn) piece).getSpecialTurnNumber());
+                        cloned_board.place(new_pawn.getPosition(), new_pawn);
+                        break;
+                    case "qu":
+                        Piece new_queen = new Queen(this_player, x_axis, y_axis);
+                        cloned_board.place(new_queen.getPosition(), new_queen);
+                        break;
+                    case "kn":
+                        Piece new_knight = new Knight(this_player, x_axis, y_axis);
+                        cloned_board.place(new_knight.getPosition(), new_knight);
+                        break;
+                    case "bi":
+                        Piece new_bishop = new Bishop(this_player, x_axis, y_axis);
+                        cloned_board.place(new_bishop.getPosition(), new_bishop);
+                        break;
+                }
+            }
+        }
+        return cloned_board;
+    }
+
     public void displayBoard() {
         for (int y = 7; y > -1; y--) {
             System.out.printf(y + 1 + " ");
@@ -122,6 +191,8 @@ public class Board {
     public void decreaseTurnNumber() {
         this.turn_number--;
     }
+
+    public void setTurnNumber(int value) { this.turn_number = value;}
 
     public List<List<List<Integer>>> getAllLegalMoves(int player) {
         List<List<List<Integer>>> all_legal_moves = new ArrayList<>();

@@ -39,10 +39,17 @@ public class Main {
         //testGetAIMoveOnePawn();
         //testGetAIMoveOnlyKing();
         //testGetUserInput();
-        //testPlayGame();
+        testPlayGame();
         //testUnderThreat();
-        testAIThreadSample();
-
+        //testAIThreadSample();
+        //testAIThreadNotNull();
+        //testSampleThread();
+        //testSampleJoinedThread();
+        //testSampleAIJoinedThread();
+        //testEmptyBoard();
+        //testGetAIMoveMT();
+        //testGetAIMoveMTSample();
+        //testChar();
 
     }
 
@@ -2157,18 +2164,100 @@ public class Main {
     public static void testAIThreadSample() {
 
         // creating objects t1 of MyThread
-        AIThreadSample t1 = new AIThreadSample();
-
+        List<Integer> test_list = new ArrayList<>(1);
+        AIThreadSample t1 = new AIThreadSample(test_list);
 
         int x = 0;
-        while (x < 99999) {
+        while (x < 999999) {
             x++;
         }
+        t1.t.interrupt();
+
+        while (x < 9999999) {
+            x++;
+        }
+        System.out.println("Main thread: Input List: ");
+        System.out.println(test_list);
+
+
+        System.out.println("Exiting the main Thread");
+
+        // main thread terminates before child thread
+        // - asynchronous:
+        //  - main thread starts
+        //  - child thread started by main thread
+        //   - appends first element into list provided by main thread
+        //  - main thread displays updated list
+        //  - main thread ends
+        //  - child thread appends 2nd element into list provided by main thread
+        //  - child thread ends
+
+    }
+
+    public static void testAIThreadNotNull() {
+
+        // creating objects t1 of MyThread
+        List<Integer> test_list = new ArrayList<>(1);
+        AIThreadSample t1 = new AIThreadSample(test_list);
+
+        while (test_list.size() == 0) {
+        }
         //t1.t.interrupt();
+        //t1.t.join();
+
+        System.out.println("Main thread: Input List: ");
+        System.out.println(test_list);
 
 
+        System.out.println("Exiting the main Thread");
+
+        // main thread terminates before child thread
+        // - asynchronous:
+        //  - main thread starts
+        //  - child thread started by main thread
+        //   - appends first element into list provided by main thread
+        //  - main thread displays updated list
+        //  - main thread ends
+        //  - child thread appends 2nd element into list provided by main thread
+        //  - child thread ends
+
+    }
+
+    public static void testSampleJoinedThread() {
+
+        List<Integer> sample_list = new ArrayList<>();
+        SampleJoinedThread obj = new SampleJoinedThread(99, sample_list);
+        Thread thread_x = new Thread(obj);
+        thread_x.start();
+        //System.out.println("1000");
+
+        try
+        {
+            thread_x.join();
+            //System.out.println("1000");
+        }
+
+        catch(Exception ex)
+        {
+
+        }
+
+
+        System.out.println("This code is outside of the thread");
+        System.out.println(sample_list);
+
+
+
+
+
+    }
+
+    public static void testSampleThread() {
+
+        SampleThread t1 = new SampleThread();
 
         /*
+
         try {
             Thread.sleep(1);
 
@@ -2186,7 +2275,96 @@ public class Main {
 
          */
 
+        t1.t.interrupt();
         System.out.println("Exiting the main Thread");
+
+    }
+
+    public static void testSampleAIJoinedThread() {
+
+        List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
+        List<List<List<Integer>>> sample_list = new ArrayList<>();
+        List<Thread> started_threads = new ArrayList<>();
+        Board new_board = new Board();
+
+
+        for (int x = 0; x < 5; x++) {
+
+            Board cloned = new_board.cloneBoard();
+            SampleAIJoinedThread obj = new SampleAIJoinedThread(3, cloned, sample_list, safe_dest_moves);
+            Thread thread_x = new Thread(obj);
+            thread_x.start();
+            started_threads.add(thread_x);
+
+        }
+
+        while (sample_list.size() < 1) {
+            try
+            {
+                Thread.sleep(100);
+            }
+            catch(Exception ex)
+            {
+            }
+        }
+
+        try
+        {
+            for (int x = 0; x < 5; x++) {
+                started_threads.get(x).interrupt();
+            }
+        }
+        catch(Exception ex)
+        {
+        }
+
+
+
+        System.out.println("This code is outside of the thread");
+        System.out.println(sample_list);
+
+
+
+    }
+
+    public static void testEmptyBoard() {
+
+        Board normal_board = new Board();
+        Board cloned = normal_board.cloneBoard();
+        setupRemove(normal_board, 0, 0 );
+
+        normal_board.displayBoard();
+        cloned.displayBoard();
+
+        for (int x = 0; x < 4; x++) {
+            System.out.println(cloned.getPlayerPieces(x).size());
+        }
+
+
+    }
+
+    public static void testGetAIMoveMT() {
+
+        Board new_board = new Board();
+
+        //System.out.println(AI.getAIMoveMT(new_board));
+        AI.getAIMoveMT(new_board);
+
+    }
+
+    public static void testGetAIMoveMTSample() {
+
+        Board new_board = new Board();
+        System.out.println("@ Main");
+        System.out.println(AI.getAIMoveMTSample(new_board));
+        System.out.println("@ Main after fetched move displayed");
+
+
+    }
+
+    public static void testChar() {
+        //Game game = new Game();
+
 
     }
 
