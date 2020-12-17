@@ -1,10 +1,7 @@
 package chess_project;
 import chess_project.pieces.*;
 
-import java.nio.file.LinkPermission;
 import java.util.*;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Main {
 
@@ -2223,63 +2220,6 @@ public class Main {
 
     }
 
-    public static void testSampleJoinedThread() {
-
-        List<Integer> sample_list = new ArrayList<>();
-        SampleJoinedThread obj = new SampleJoinedThread(99, sample_list);
-        Thread thread_x = new Thread(obj);
-        thread_x.start();
-        //System.out.println("1000");
-
-        try
-        {
-            thread_x.join();
-            //System.out.println("1000");
-        }
-
-        catch(Exception ex)
-        {
-
-        }
-
-
-        System.out.println("This code is outside of the thread");
-        System.out.println(sample_list);
-
-
-
-
-
-    }
-
-    public static void testSampleThread() {
-
-        SampleThread t1 = new SampleThread();
-
-        /*
-
-        try {
-            Thread.sleep(1);
-
-            // t1 is an object of MyThread
-            // which has an object t
-            // which is of type Thread
-            t1.t.interrupt();
-
-            Thread.sleep(5);
-        }
-        catch (InterruptedException e) {
-            System.out.println("Caught:" + e);
-        }
-
-
-         */
-
-        t1.t.interrupt();
-        System.out.println("Exiting the main Thread");
-
-    }
-
     public static void testSampleAIJoinedThread() {
 
         List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
@@ -2291,7 +2231,7 @@ public class Main {
         for (int x = 0; x < 5; x++) {
 
             Board cloned = new_board.cloneBoard();
-            SampleAIJoinedThread obj = new SampleAIJoinedThread(3, cloned, sample_list, safe_dest_moves);
+            GetAIMoveThread obj = new GetAIMoveThread(3, cloned, sample_list, safe_dest_moves);
             Thread thread_x = new Thread(obj);
             thread_x.start();
             started_threads.add(thread_x);
@@ -2342,6 +2282,7 @@ public class Main {
 
 
     }
+
 
     public static void testGetAIMoveMT() {
 

@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class SampleAIJoinedThread implements Runnable {
+public class GetAIMoveThread implements Runnable {
 
     //private int test_int = 0;
     private Board test_board;
@@ -16,7 +16,7 @@ public class SampleAIJoinedThread implements Runnable {
     private int test_int;
 
 
-    public SampleAIJoinedThread(int input_max_recursion, Board input_board, List<List<List<Integer>>> input_list, List<List<List<Integer>>> safe_dest_moves) {
+    public GetAIMoveThread(int input_max_recursion, Board input_board, List<List<List<Integer>>> input_list, List<List<List<Integer>>> safe_dest_moves) {
         this.test_board = input_board;
         this.test_list = input_list;
         this.test_int = input_max_recursion;
