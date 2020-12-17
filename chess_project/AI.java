@@ -37,7 +37,6 @@ public class AI {
 
     public static List<List<Integer>> getAIMoveMT(Board input_board) {
 
-        System.out.println("Black is coming up with a move, please wait!");
 
         List<Thread> started_threads = new ArrayList<>();
 
@@ -109,7 +108,7 @@ public class AI {
 
     // TEMPORARILY PUBLIC, set back to PRIVATE LATER
     public static List<List<Integer>> getAIMoveMaxRecursion(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board, List<List<List<Integer>>> safe_dest_moves) {
-        //System.out.println("current recursion depth: " + current_recursion);
+        System.out.println("current recursion depth: " + current_recursion);
         List<List<List<Integer>>> legal_moves = input_board.getAllLegalMoves(1);
         for (List<List<Integer>> move : legal_moves) {
             // make mock move with static ai method in ai class

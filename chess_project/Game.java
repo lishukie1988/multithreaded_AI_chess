@@ -97,6 +97,7 @@ public class Game {
             chosen_move = this.getUserMove();
         }
         else { // if AI (black)
+            System.out.println("Black is coming up with a move, please wait!");
             chosen_move = AI.getAIMove(this.chess_board);
             //chosen_move = AI.getAIMoveMT(this.chess_board);
         }
@@ -412,6 +413,12 @@ public class Game {
         this.chess_board.displayBoard();
         while (this.game_state.equals("active")) {
             this.nextTurn();
+            try {
+                Thread.sleep(2000);
+            }
+            catch (Exception e) {
+
+            }
             //System.out.printf("%n");
 
             //System.out.println(this.chess_board.getAllLegalMoves(this.player_turn));
