@@ -132,8 +132,8 @@ public class Game {
       - dest pos doesn't contain player's own piece
      */
     private List<List<Integer>> validateUserMoveLegal(List<List<Integer>> input_indexes) {
-        System.out.println(input_indexes);
-        System.out.println(this.chess_board.getAllLegalMoves(0));
+        //System.out.println(input_indexes);
+        //System.out.println(this.chess_board.getAllLegalMoves(0));
         for (List<List<Integer>> legal_move : this.chess_board.getAllLegalMoves(0)) {
             if (legal_move.get(0).equals(input_indexes.get(0)) && legal_move.get(1).equals(input_indexes.get(1))) {
                 return legal_move;
@@ -285,9 +285,16 @@ public class Game {
     private void makeGameMove(List<List<Integer>> move) {
 
         this.chess_board.makeMove(move);
+
+        int x_axis = move.get(1).get(0);
+        int y_axis = move.get(1).get(1);
+        int player = this.chess_board.getBoard().get(x_axis).get(y_axis).getPlayer();
+
+        this.chess_board.setMovedPiece(player, x_axis, y_axis);
         if (player_turn == 1) {
             String start = this.indexToString(move.get(0));
             String dest = this.indexToString(move.get(1));
+            this.chess_board.displayBoard();
             System.out.println("Black moved from " + start + " to " + dest + "!");
         }
         this.player_turn = (this.player_turn == 0) ? 1: 0;
@@ -402,10 +409,12 @@ public class Game {
 
     public void playGame() {
 
+        this.chess_board.displayBoard();
         while (this.game_state.equals("active")) {
-            this.chess_board.displayBoard();
             this.nextTurn();
-            System.out.println(this.chess_board.getAllLegalMoves(this.player_turn));
+            //System.out.printf("%n");
+
+            //System.out.println(this.chess_board.getAllLegalMoves(this.player_turn));
         }
 
     }

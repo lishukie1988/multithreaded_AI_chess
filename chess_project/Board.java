@@ -8,6 +8,8 @@ public class Board {
     private ArrayList<ArrayList<Piece>> board = new ArrayList<>(8);
     private Map<Integer, ArrayList<Piece>> player_pieces = new HashMap<Integer, ArrayList<Piece>>(4); // black = 1, white = 0, black_king = 3, white_king = 2
     private int turn_number = 1;
+    private List<Integer> black_move = new ArrayList<>(2);
+    private List<Integer> white_move = new ArrayList<>(2);
 
     public Board () {
 
@@ -19,6 +21,14 @@ public class Board {
         this.player_pieces.put(1, black_pieces);
         this.player_pieces.put(2, white_king);
         this.player_pieces.put(3, black_king);
+
+        for (int x = 0; x < 2; x++) {
+            this.black_move.add(-99);
+        }
+
+        for (int x = 0; x < 2; x++) {
+            this.white_move.add(-99);
+        }
 
         for (int x = 0; x < 8; x++) {
             ArrayList<Piece> new_row = new ArrayList<Piece>(8);
@@ -147,28 +157,87 @@ public class Board {
     }
 
     public void displayBoard() {
+        ArrayList<String> colors = new ArrayList<String>(2);
+        String black_color = "||||||||";
+        String white_color = "        ";
+        colors.add(black_color);
+        colors.add(white_color);
+
+        for (int x = 0; x < 30; x++) {
+            System.out.printf("%n");
+        }
+
         for (int y = 7; y > -1; y--) {
-            System.out.printf(y + 1 + " ");
+
+
+            int start = (y % 2 == 1) ? 1 : 0;
+
+            System.out.printf("  ");
+
             for (int x = 0; x < 8; x++) {
-                Piece current_piece = this.board.get(x).get(y);
-                if (current_piece != null) {
-                    String current_player = (current_piece.getPlayer() == 1) ? "B" : "W";
-                    System.out.printf("-(" + current_player + " " + current_piece.getCharacter() + ")-");
-                }
-                else {
-                    System.out.printf("---**---");
-                }
+                int color = ((x + start) % 2 == 0) ? 0 : 1;
+                System.out.printf(colors.get(color));
             }
             System.out.printf("%n");
+
+
+            System.out.printf(y + 1 + " ");
+
+
+
+            for (int x = 0; x < 8; x++) {
+                int color = ( (x + start) % 2 == 0) ? 0 : 1;
+
+
+                //System.out.printf(colors.get(color));
+
+                Piece current_piece = this.board.get(x).get(y);
+                if (current_piece != null) {
+                    if (current_piece.getPosition().equals(black_move) || current_piece.getPosition().equals(white_move)) {
+                        String current_player = (current_piece.getPlayer() == 1) ? "B" : "W";
+                        System.out.printf("((" + current_player + " " + current_piece.getCharacter() + "))");
+
+                    }
+                    else {
+                        String current_player = (current_piece.getPlayer() == 1) ? "B" : "W";
+                        System.out.printf(colors.get(color).substring(0, 1) + "(" + current_player + " " + current_piece.getCharacter() + ")" + colors.get(color).substring(0, 1));
+                    }
+                }
+                else {
+                    System.out.printf(colors.get(color) );
+                }
+                //System.out.printf(colors.get(color));
+
+
+            }
+            System.out.printf("%n");
+
+            System.out.printf("  ");
+
+            for (int x = 0; x < 8; x++) {
+                int color = ((x + start) % 2 == 0) ? 0 : 1;
+                System.out.printf(colors.get(color));
+            }
+            System.out.printf("%n");
+
         }
 
         int ascii = 65;
         System.out.printf("  ");
         for (int x = 0; x < 8; x++) {
-            System.out.printf("---" + (char)ascii + (char)ascii + "---");
+            System.out.printf("   " + (char)ascii + (char)ascii + "   ");
             ascii++;
         }
         System.out.println("");
+        System.out.printf("%n");
+    }
+
+    public void setMovedPiece(int player, int x, int y) {
+        List<Integer> fetched_moved_square = (player == 0) ? this.white_move : this.black_move;
+        fetched_moved_square.set(0, x);
+        fetched_moved_square.set(1, y);
+
+
     }
 
     public ArrayList<ArrayList<Piece>> getBoard() {

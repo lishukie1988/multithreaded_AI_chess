@@ -3,6 +3,8 @@ import chess_project.pieces.*;
 
 import java.util.*;
 
+import javax.swing.*;
+
 public class Main {
 
     public static void main(String[] arg) {
@@ -47,7 +49,7 @@ public class Main {
         //testGetAIMoveMT();
         //testGetAIMoveMTSample();
         //testChar();
-
+        //testJFrame();
     }
 
     public static void testBishopTheoretic() {
@@ -2308,5 +2310,17 @@ public class Main {
 
 
     }
+
+    public static void testJFrame() {
+
+        JFrame frame = new JFrame("My First GUI");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300,300);
+        JButton button1 = new JButton("Press");
+        frame.getContentPane().add(button1);
+        frame.setVisible(true);
+
+    }
+
 
 }

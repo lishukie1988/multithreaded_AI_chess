@@ -37,6 +37,7 @@ public class AI {
 
     public static List<List<Integer>> getAIMoveMT(Board input_board) {
 
+        System.out.println("Black is coming up with a move, please wait!");
 
         List<Thread> started_threads = new ArrayList<>();
 
@@ -59,7 +60,7 @@ public class AI {
         int current_unjoined_thread = 0;
 
         for (int x = 0; x < 7; x++) {
-            System.out.println("Joining thread " + x );
+            //System.out.println("Joining thread " + x );
             try {
                 started_threads.get(x).join();
                 current_unjoined_thread = x + 1;
@@ -74,7 +75,7 @@ public class AI {
         try
         {
             for (int x = current_unjoined_thread; x < 7; x++) {
-                System.out.println("Interrupting thread " + x);
+                //System.out.println("Interrupting thread " + x);
                 started_threads.get(x).interrupt();
             }
         }
@@ -96,7 +97,7 @@ public class AI {
             }
         }
 
-        System.out.println("Reached return fetched_move");
+        //System.out.println("Reached return fetched_move");
 
 
         //System.out.println("safe dest moves: " );
