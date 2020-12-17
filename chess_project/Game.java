@@ -97,8 +97,8 @@ public class Game {
             chosen_move = this.getUserMove();
         }
         else { // if AI (black)
-            //chosen_move = AI.getAIMove(this.chess_board);
-            chosen_move = AI.getAIMoveMT(this.chess_board);
+            chosen_move = AI.getAIMove(this.chess_board);
+            //chosen_move = AI.getAIMoveMT(this.chess_board);
         }
 
         return chosen_move;
