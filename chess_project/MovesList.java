@@ -43,12 +43,12 @@ public class MovesList {
         else {
             for (int move : this.moves) {
                 if (move == 1) {
-                    return 1;
+                    return 0;
                 }
             }
         }
 
-        return 0;
+        return 1;
     }
 
 }

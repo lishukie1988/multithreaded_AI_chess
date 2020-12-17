@@ -164,21 +164,17 @@ public class Game {
         do {
             System.out.print("Please pick a starting position (ie \"d2\"): ");
             start_pos = get_input.nextLine();
+            System.out.print("Please pick a destination position (ie \"d3\"): ");
+            dest_pos = get_input.nextLine();
         }
-        while (this.validateInputFormat(start_pos) == 0 || this.validatePlayersPiece(start_pos) == 0);
+        while (this.validateInputFormat(start_pos) == 0 || this.validatePlayersPiece(start_pos) == 0 ||
+                this.validateInputFormat(dest_pos) == 0 || this.validateNotPlayersPiece(dest_pos) == 0);
 
         List<Integer> int_start_pos = convertToIndexes(start_pos);
         fetched_user_input.add(int_start_pos);
 
-        do {
-            System.out.print("Please pick a destination position (ie \"d3\"): ");
-            dest_pos = get_input.nextLine();
-        }
-        while (this.validateInputFormat(dest_pos) == 0 || this.validateNotPlayersPiece(dest_pos) == 0);
-
         List<Integer> int_dest_pos = convertToIndexes(dest_pos);
         fetched_user_input.add(int_dest_pos);
-
 
         return fetched_user_input;
 
@@ -330,6 +326,38 @@ public class Game {
 
     }
 
+    private void updateMovesList(List<List<Integer>> chosen_legal_move) {
+
+        // if pawn piece is moved (including en passant)
+        Piece start_piece = this.chess_board.getBoard().get(chosen_legal_move.get(0).get(0)).get(chosen_legal_move.get(0).get(1));
+        Piece dest_piece = this.chess_board.getBoard().get(chosen_legal_move.get(1).get(0)).get(chosen_legal_move.get(1).get(1));
+
+        if (start_piece.getCharacter() == "pa" || dest_piece != null) {
+            this.moves_list.addMove(1);
+        }
+        else {
+            this.moves_list.addMove(0);
+        }
+
+        //System.out.println("this.moves_list: ");
+        //System.out.println(this.moves_list.getMoves());
+
+    }
+
+
+    private int checkFiftyMoveDraw() {
+
+        if (this.moves_list.isDraw() == 1) {
+            this.game_state = "fifty_move_draw";
+            System.out.println("Game is drawn because none of the past 50 moves contain a pawn move or capture!");
+            return 1;
+        }
+
+        return 0;
+
+    }
+
+
     private int nextTurn() {
 
         /*
@@ -344,7 +372,7 @@ public class Game {
 
         List<List<Integer>> chosen_move = this.fetchChosenMove();
 
-        //this.updateMovesList(chosen_move);
+        this.updateMovesList(chosen_move);
 
         this.makeGameMove(chosen_move);
 
@@ -352,6 +380,10 @@ public class Game {
 
         this.updateInCheck();
 
+
+        if (checkFiftyMoveDraw() == 1) {
+            return 1;
+        }
 
         if (this.checkCheckmateStalemate() == 1) {
             return 1;
