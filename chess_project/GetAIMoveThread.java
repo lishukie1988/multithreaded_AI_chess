@@ -44,7 +44,12 @@ public class GetAIMoveThread implements Runnable {
             if (fetched_move != null) {
                 //System.out.println("Inside thread, finishedcalling getAIMoveRecursion, fetched move: ");
                 //System.out.println(fetched_move);
-                test_list.add(fetched_move);
+
+                // ****** commented out for now to test mutex
+                //test_list.add(fetched_move);
+                // ****** mutex protected (synchronized) list appending
+                AI.addToFetchedMovesList(this.test_list, fetched_move);
+
             }
 
             //test_list.add(AI.getAIMoveMaxRecursion(null, 0, this.test_int, this.test_board, this.safe_dest_moves));

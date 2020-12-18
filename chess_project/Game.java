@@ -320,8 +320,14 @@ public class Game {
         List<List<List<Integer>>> all_legal_moves = this.chess_board.getAllLegalMoves(this.player_turn);
         if (all_legal_moves.size() == 0) {
             if (this.in_check == this.player_turn) {
-                this.game_state = "black_won";
-                System.out.println("Black won!");
+                if (this.player_turn == 0) {
+                    this.game_state = "black_won";
+                    System.out.println("Black won!");
+                }
+                else {
+                    this.game_state = "white_won";
+                    System.out.println("White won!");
+                }
             }
             else {
                 this.game_state = "stalemate";

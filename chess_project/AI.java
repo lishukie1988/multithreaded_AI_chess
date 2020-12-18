@@ -2,6 +2,7 @@ package chess_project;
 import chess_project.pieces.*;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class AI {
 
@@ -45,6 +46,8 @@ public class AI {
         List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
         //int max_recursion = 0;
 
+        //ReentrantLock lock_fetched_moves_list = new ReentrantLock();
+
 
         for (int max_recursion = 0; max_recursion < 7; max_recursion++) {
 
@@ -59,7 +62,7 @@ public class AI {
         int current_unjoined_thread = 0;
 
         for (int x = 0; x < 7; x++) {
-            //System.out.println("Joining thread " + x );
+            System.out.println("Joining thread " + x );
             try {
                 started_threads.get(x).join();
                 current_unjoined_thread = x + 1;
@@ -74,7 +77,7 @@ public class AI {
         try
         {
             for (int x = current_unjoined_thread; x < 7; x++) {
-                //System.out.println("Interrupting thread " + x);
+                System.out.println("Interrupting thread " + x);
                 started_threads.get(x).interrupt();
             }
         }
@@ -105,6 +108,11 @@ public class AI {
         return fetched_move;
 
     }
+
+    public static synchronized void addToFetchedMovesList (List<List<List<Integer>>> input_list, List<List<Integer>> fetched_move) {
+        input_list.add(fetched_move);
+    }
+
 
     // TEMPORARILY PUBLIC, set back to PRIVATE LATER
     public static List<List<Integer>> getAIMoveMaxRecursion(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board, List<List<List<Integer>>> safe_dest_moves) {
