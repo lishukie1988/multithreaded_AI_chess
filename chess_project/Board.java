@@ -279,14 +279,64 @@ public class Board {
 
     }
 
+
+    /*
+    - returns 0 if opponent piece has no chance of capturing player's king
+     */
+    public int fastCheck(Piece opponent_piece, int player) {
+
+        List<Integer> king_position = this.player_pieces.get(player + 2).get(0).getPosition();
+        int king_x = king_position.get(0);
+        int king_y = king_position.get(1);
+        int opp_x = opponent_piece.getPosition().get(0);
+        int opp_y = opponent_piece.getPosition().get(1);
+
+
+        String character = opponent_piece.getCharacter();
+        switch (character) {
+            case "ki":
+            case "pa":
+                if (Math.abs(king_x - opp_x) >= 2 || Math.abs(king_y - opp_y) >= 2) {
+                    return 0;
+                }
+                break;
+            case "ro":
+                if (king_x != opp_x && king_y != opp_y) {
+                    return 0;
+                }
+                break;
+            case "bi":
+                if (king_x == opp_x || king_y == opp_y) {
+                    return 0;
+                }
+                break;
+            case "kn":
+                if (Math.abs(king_x - opp_x) >= 3 || (Math.abs(king_y - opp_y)) >= 3) {
+                    return 0;
+                }
+                break;
+        }
+
+        return 1;
+
+    }
+
+
     public int inCheckNormal(int player) {
 
         int opposite_player = (player == 0) ? 1 : 0;
-        List<Integer> king_position = new ArrayList<>(2);
-        king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(0));
-        king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
+        //List<Integer> king_position = new ArrayList<>(2);
+        //king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(0));
+        //king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
+        List<Integer> king_position = this.player_pieces.get(player + 2).get(0).getPosition();
 
         for (Piece piece : this.player_pieces.get(opposite_player)) {
+
+            int fast_check = this.fastCheck(piece, player);
+            if (fast_check == 0) {
+                continue;
+            }
+
             List<List<List<Integer>>> theoretic_moves = piece.getTheoreticMoves(this);
             for (List<List<Integer>> theoretic_move : theoretic_moves) {
                 if (theoretic_move.get(1).equals(king_position)) {
@@ -308,14 +358,21 @@ public class Board {
 
         int opposite_player = (player == 0) ? 1 : 0;
         //int opposite_starting_rank = (player == 0) ? 0 : 7;
-        List<Integer> king_position = new ArrayList<>(2);
-        king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(0));
-        king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
+        //List<Integer> king_position = new ArrayList<>(2);
+        //king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(0));
+        //king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
+        List<Integer> king_position = this.player_pieces.get(player + 2).get(0).getPosition();
 
         for (Piece piece : this.player_pieces.get(opposite_player)) {
             if (piece.getCharacter() == "ki") {
                 continue;
             }
+
+            int fast_check = this.fastCheck(piece, player);
+            if (fast_check == 0) {
+                continue;
+            }
+
             List<List<List<Integer>>> theoretic_moves = piece.getTheoreticMoves(this);
             for (List<List<Integer>> theoretic_move : theoretic_moves) {
                 if (theoretic_move.get(1).equals(king_position)) {

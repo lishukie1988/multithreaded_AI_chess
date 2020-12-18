@@ -420,7 +420,7 @@ public class Game {
         while (this.game_state.equals("active")) {
             this.nextTurn();
             try {
-                Thread.sleep(2000);
+                Thread.sleep(10);
             }
             catch (Exception e) {
 

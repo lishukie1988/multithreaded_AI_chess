@@ -61,7 +61,7 @@ public class AI {
 
         int current_unjoined_thread = 0;
 
-        for (int x = 0; x < 7; x++) {
+        for (int x = 0; x < 5; x++) {
             System.out.println("Joining thread " + x );
             try {
                 started_threads.get(x).join();
@@ -76,7 +76,7 @@ public class AI {
 
         try
         {
-            for (int x = current_unjoined_thread; x < 7; x++) {
+            for (int x = current_unjoined_thread; x < 5; x++) {
                 System.out.println("Interrupting thread " + x);
                 started_threads.get(x).interrupt();
             }
