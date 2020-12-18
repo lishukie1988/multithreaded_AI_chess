@@ -124,9 +124,11 @@ public class AI {
 
             // *** CHANGED TO UNDERTHREAT FROM NONPAWNUNDERTHREAT
             int start_under_threat = input_board.underThreat(move.get(0).get(0), move.get(0).get(1));
-            int is_pawn = (input_board.getBoard().get(move.get(0).get(0)).get(move.get(0).get(1)).getCharacter() == "pa") ? 1 : 0;
-            int is_first_ten = (input_board.getTurnNumber() < 11) ? 1 : 0;
-            int first_ten_start_pawn = (is_pawn == 1 && is_first_ten == 1) ? 1 : 0;
+            // *
+            //int is_pawn = (input_board.getBoard().get(move.get(0).get(0)).get(move.get(0).get(1)).getCharacter() == "pa") ? 1 : 0;
+            //int is_first_ten = (input_board.getTurnNumber() < 11) ? 1 : 0;
+            // *
+            //int first_ten_start_pawn = (is_pawn == 1 && is_first_ten == 1) ? 1 : 0;
 
             ReverseMove reverse_move = aIMockMove(move, input_board);
 
@@ -138,7 +140,7 @@ public class AI {
             }
 
             // *
-            if ( ( (start_under_threat == 1 || first_ten_start_pawn == 1 ) && dest_under_threat == 0) || (dest_under_threat == 0 && input_board.inCheck(0) == 1)) {
+            if ( ( start_under_threat == 1 && dest_under_threat == 0) || (dest_under_threat == 0 && input_board.inCheck(0) == 1)) {
                 //System.out.println(move.get(1));
                 //System.out.println(input_board.getAllLegalMoves(0));
                 aiReverseMockMove(reverse_move, input_board);
