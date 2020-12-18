@@ -49,7 +49,7 @@ public class AI {
         //ReentrantLock lock_fetched_moves_list = new ReentrantLock();
 
 
-        for (int max_recursion = 0; max_recursion < 7; max_recursion++) {
+        for (int max_recursion = 0; max_recursion < 4; max_recursion++) {
 
             Board cloned = input_board.cloneBoard();
             GetAIMoveThread obj = new GetAIMoveThread(max_recursion, cloned, fetched_moves_list, safe_dest_moves);
@@ -61,8 +61,8 @@ public class AI {
 
         int current_unjoined_thread = 0;
 
-        for (int x = 0; x < 5; x++) {
-            System.out.println("AI joining thread " + x + "/5");
+        for (int x = 0; x < 4; x++) {
+            System.out.println("AI joining thread " + x + "/4");
             try {
                 started_threads.get(x).join();
                 current_unjoined_thread = x + 1;
@@ -76,8 +76,8 @@ public class AI {
 
         try
         {
-            for (int x = current_unjoined_thread; x < 5; x++) {
-                System.out.println("AI interrupting thread " + x + "/5");
+            for (int x = current_unjoined_thread; x < 4; x++) {
+                System.out.println("AI interrupting thread " + x + "/4");
                 started_threads.get(x).interrupt();
             }
         }
@@ -113,6 +113,11 @@ public class AI {
         input_list.add(fetched_move);
     }
 
+    public static synchronized  void addToSafeDestMoves (List<List<List<Integer>>> input_list, List<List<Integer>> safe_dest_move) {
+        input_list.add(safe_dest_move);
+    }
+
+
 
     // TEMPORARILY PUBLIC, set back to PRIVATE LATER
     public static List<List<Integer>> getAIMoveMaxRecursion(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board, List<List<List<Integer>>> safe_dest_moves) {
@@ -135,8 +140,10 @@ public class AI {
             // *** CHANGED TO UNDERTHREAT FROM NONPAWNUNDERTHREAT
             int dest_under_threat = input_board.underThreat(move.get(1).get(0), move.get(1).get(1));
 
-            if (root_move == null && dest_under_threat == 0) {
-                safe_dest_moves.add(move);
+            // *** added mutex
+            if (root_move == null && dest_under_threat == 0 && safe_dest_moves.size() == 0) {
+                //safe_dest_moves.add(move);
+                addToSafeDestMoves(safe_dest_moves, move);
             }
 
             // *
