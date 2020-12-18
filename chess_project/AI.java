@@ -49,7 +49,7 @@ public class AI {
         //ReentrantLock lock_fetched_moves_list = new ReentrantLock();
 
 
-        for (int max_recursion = 0; max_recursion < 5; max_recursion++) {
+        for (int max_recursion = 0; max_recursion < 6; max_recursion++) {
 
             Board cloned = input_board.cloneBoard();
             GetAIMoveThread obj = new GetAIMoveThread(max_recursion, cloned, fetched_moves_list, safe_dest_moves);
@@ -61,8 +61,8 @@ public class AI {
 
         int current_unjoined_thread = 0;
 
-        for (int x = 0; x < 5; x++) {
-            System.out.println("AI joining thread " + x + "/4");
+        for (int x = 0; x < 6; x++) {
+            System.out.println("AI joining thread " + x + "/5");
             try {
                 started_threads.get(x).join();
                 current_unjoined_thread = x + 1;
@@ -76,8 +76,8 @@ public class AI {
 
         try
         {
-            for (int x = current_unjoined_thread; x < 5; x++) {
-                System.out.println("AI interrupting thread " + x + "/4");
+            for (int x = current_unjoined_thread; x < 6; x++) {
+                System.out.println("AI interrupting thread " + x + "/5");
                 started_threads.get(x).interrupt();
             }
         }
