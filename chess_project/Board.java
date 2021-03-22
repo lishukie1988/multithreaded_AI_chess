@@ -8,6 +8,8 @@ public class Board {
     private ArrayList<ArrayList<Piece>> board = new ArrayList<>(8);
     private Map<Integer, ArrayList<Piece>> player_pieces = new HashMap<Integer, ArrayList<Piece>>(4); // black = 1, white = 0, black_king = 3, white_king = 2
     private int turn_number = 1;
+    private List<Integer> black_move = new ArrayList<>(2);
+    private List<Integer> white_move = new ArrayList<>(2);
 
     public Board () {
 
@@ -19,6 +21,14 @@ public class Board {
         this.player_pieces.put(1, black_pieces);
         this.player_pieces.put(2, white_king);
         this.player_pieces.put(3, black_king);
+
+        for (int x = 0; x < 2; x++) {
+            this.black_move.add(-99);
+        }
+
+        for (int x = 0; x < 2; x++) {
+            this.white_move.add(-99);
+        }
 
         for (int x = 0; x < 8; x++) {
             ArrayList<Piece> new_row = new ArrayList<Piece>(8);
@@ -77,29 +87,157 @@ public class Board {
         }
     }
 
-    public void displayBoard() {
-        for (int y = 7; y > -1; y--) {
-            System.out.printf(y + 1 + " ");
-            for (int x = 0; x < 8; x++) {
-                Piece current_piece = this.board.get(x).get(y);
-                if (current_piece != null) {
-                    String current_player = (current_piece.getPlayer() == 1) ? "B" : "W";
-                    System.out.printf("-(" + current_player + " " + current_piece.getCharacter() + ")-");
-                }
-                else {
-                    System.out.printf("---**---");
+    public Board (int empty) {
+
+        ArrayList<Piece> black_pieces = new ArrayList<Piece>(15);
+        ArrayList<Piece> white_pieces = new ArrayList<Piece>(15);
+        ArrayList<Piece> black_king = new ArrayList<>(1);
+        ArrayList<Piece> white_king = new ArrayList<>(1);
+        this.player_pieces.put(0, white_pieces);
+        this.player_pieces.put(1, black_pieces);
+        this.player_pieces.put(2, white_king);
+        this.player_pieces.put(3, black_king);
+
+        for (int x = 0; x < 8; x++) {
+            ArrayList<Piece> new_row = new ArrayList<Piece>(8);
+            for (int y = 0; y < 8; y++ ) {
+                new_row.add(null);
+            }
+            this.board.add(new_row);
+        }
+
+    }
+
+    public Board cloneBoard() {
+
+        Board cloned_board = new Board(0);
+        cloned_board.setTurnNumber(this.getTurnNumber());
+        for (int player = 0; player < 2; player++) {
+            for (Piece piece : this.player_pieces.get(player)) {
+                String character = piece.getCharacter();
+                int this_player = piece.getPlayer();
+                int x_axis = piece.getPosition().get(0);
+                int y_axis = piece.getPosition().get(1);
+
+                switch (character) {
+                    case "ro":
+                        Piece new_rook = new Rook(this_player, x_axis, y_axis);
+                        ((Rook) new_rook).setMoved(((Rook) piece).getMoved());
+                        ((Rook) new_rook).setOriginal(((Rook) piece).getOriginal());
+                        cloned_board.place(new_rook.getPosition(), new_rook);
+                        break;
+                    case "ki":
+                        Piece new_king = new King(this_player, x_axis, y_axis);
+                        ((King) new_king).setMoved(((King) piece).getMoved());
+                        cloned_board.place(new_king.getPosition(), new_king);
+                        cloned_board.getPlayerPieces(player + 2).add(new_king);
+                        break;
+                    case "pa":
+                        Piece new_pawn = new Pawn(this_player, x_axis, y_axis);
+                        ((Pawn) new_pawn).setMoved(((Pawn) piece).getMoved());
+                        ((Pawn) new_pawn).setSpecialTurnNumber(((Pawn) piece).getSpecialTurnNumber());
+                        cloned_board.place(new_pawn.getPosition(), new_pawn);
+                        break;
+                    case "qu":
+                        Piece new_queen = new Queen(this_player, x_axis, y_axis);
+                        cloned_board.place(new_queen.getPosition(), new_queen);
+                        break;
+                    case "kn":
+                        Piece new_knight = new Knight(this_player, x_axis, y_axis);
+                        cloned_board.place(new_knight.getPosition(), new_knight);
+                        break;
+                    case "bi":
+                        Piece new_bishop = new Bishop(this_player, x_axis, y_axis);
+                        cloned_board.place(new_bishop.getPosition(), new_bishop);
+                        break;
                 }
             }
+        }
+        return cloned_board;
+    }
+
+    public void displayBoard() {
+        ArrayList<String> colors = new ArrayList<String>(2);
+        String black_color = "||||||||";
+        String white_color = "        ";
+        colors.add(black_color);
+        colors.add(white_color);
+
+        for (int x = 0; x < 30; x++) {
             System.out.printf("%n");
+        }
+
+        for (int y = 7; y > -1; y--) {
+
+
+            int start = (y % 2 == 1) ? 1 : 0;
+
+            System.out.printf("  ");
+
+            for (int x = 0; x < 8; x++) {
+                int color = ((x + start) % 2 == 0) ? 0 : 1;
+                System.out.printf(colors.get(color));
+            }
+            System.out.printf("%n");
+
+
+            System.out.printf(y + 1 + " ");
+
+
+
+            for (int x = 0; x < 8; x++) {
+                int color = ( (x + start) % 2 == 0) ? 0 : 1;
+
+
+                //System.out.printf(colors.get(color));
+
+                Piece current_piece = this.board.get(x).get(y);
+                if (current_piece != null) {
+                    if (current_piece.getPosition().equals(black_move) || current_piece.getPosition().equals(white_move)) {
+                        String current_player = (current_piece.getPlayer() == 1) ? "B" : "W";
+                        System.out.printf("*(" + current_player + " " + current_piece.getCharacter() + ")*");
+
+                    }
+                    else {
+                        String current_player = (current_piece.getPlayer() == 1) ? "B" : "W";
+                        System.out.printf(colors.get(color).substring(0, 1) + "(" + current_player + " " + current_piece.getCharacter() + ")" + colors.get(color).substring(0, 1));
+                    }
+                }
+                else {
+                    System.out.printf(colors.get(color) );
+                }
+                //System.out.printf(colors.get(color));
+
+
+            }
+            System.out.printf("%n");
+
+            System.out.printf("  ");
+
+            for (int x = 0; x < 8; x++) {
+                int color = ((x + start) % 2 == 0) ? 0 : 1;
+                System.out.printf(colors.get(color));
+            }
+            System.out.printf("%n");
+
         }
 
         int ascii = 65;
         System.out.printf("  ");
         for (int x = 0; x < 8; x++) {
-            System.out.printf("---" + (char)ascii + (char)ascii + "---");
+            System.out.printf("   " + (char)ascii + (char)ascii + "   ");
             ascii++;
         }
         System.out.println("");
+        System.out.printf("%n");
+    }
+
+    public void setMovedPiece(int player, int x, int y) {
+        List<Integer> fetched_moved_square = (player == 0) ? this.white_move : this.black_move;
+        fetched_moved_square.set(0, x);
+        fetched_moved_square.set(1, y);
+
+
     }
 
     public ArrayList<ArrayList<Piece>> getBoard() {
@@ -123,6 +261,8 @@ public class Board {
         this.turn_number--;
     }
 
+    public void setTurnNumber(int value) { this.turn_number = value;}
+
     public List<List<List<Integer>>> getAllLegalMoves(int player) {
         List<List<List<Integer>>> all_legal_moves = new ArrayList<>();
         for (Piece piece : this.getPlayerPieces(player)) {
@@ -139,14 +279,64 @@ public class Board {
 
     }
 
+
+    /*
+    - returns 0 if opponent piece has no chance of capturing player's king
+     */
+    public int fastCheck(Piece opponent_piece, int player) {
+
+        List<Integer> king_position = this.player_pieces.get(player + 2).get(0).getPosition();
+        int king_x = king_position.get(0);
+        int king_y = king_position.get(1);
+        int opp_x = opponent_piece.getPosition().get(0);
+        int opp_y = opponent_piece.getPosition().get(1);
+
+
+        String character = opponent_piece.getCharacter();
+        switch (character) {
+            case "ki":
+            case "pa":
+                if (Math.abs(king_x - opp_x) >= 2 || Math.abs(king_y - opp_y) >= 2) {
+                    return 0;
+                }
+                break;
+            case "ro":
+                if (king_x != opp_x && king_y != opp_y) {
+                    return 0;
+                }
+                break;
+            case "bi":
+                if (king_x == opp_x || king_y == opp_y) {
+                    return 0;
+                }
+                break;
+            case "kn":
+                if (Math.abs(king_x - opp_x) >= 3 || (Math.abs(king_y - opp_y)) >= 3) {
+                    return 0;
+                }
+                break;
+        }
+
+        return 1;
+
+    }
+
+
     public int inCheckNormal(int player) {
 
         int opposite_player = (player == 0) ? 1 : 0;
-        List<Integer> king_position = new ArrayList<>(2);
-        king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(0));
-        king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
+        //List<Integer> king_position = new ArrayList<>(2);
+        //king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(0));
+        //king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
+        List<Integer> king_position = this.player_pieces.get(player + 2).get(0).getPosition();
 
         for (Piece piece : this.player_pieces.get(opposite_player)) {
+
+            int fast_check = this.fastCheck(piece, player);
+            if (fast_check == 0) {
+                continue;
+            }
+
             List<List<List<Integer>>> theoretic_moves = piece.getTheoreticMoves(this);
             for (List<List<Integer>> theoretic_move : theoretic_moves) {
                 if (theoretic_move.get(1).equals(king_position)) {
@@ -168,14 +358,21 @@ public class Board {
 
         int opposite_player = (player == 0) ? 1 : 0;
         //int opposite_starting_rank = (player == 0) ? 0 : 7;
-        List<Integer> king_position = new ArrayList<>(2);
-        king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(0));
-        king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
+        //List<Integer> king_position = new ArrayList<>(2);
+        //king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(0));
+        //king_position.add(this.player_pieces.get(player + 2).get(0).getPosition().get(1));
+        List<Integer> king_position = this.player_pieces.get(player + 2).get(0).getPosition();
 
         for (Piece piece : this.player_pieces.get(opposite_player)) {
             if (piece.getCharacter() == "ki") {
                 continue;
             }
+
+            int fast_check = this.fastCheck(piece, player);
+            if (fast_check == 0) {
+                continue;
+            }
+
             List<List<List<Integer>>> theoretic_moves = piece.getTheoreticMoves(this);
             for (List<List<Integer>> theoretic_move : theoretic_moves) {
                 if (theoretic_move.get(1).equals(king_position)) {

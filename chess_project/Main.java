@@ -1,8 +1,9 @@
 package chess_project;
 import chess_project.pieces.*;
 
-import java.nio.file.LinkPermission;
 import java.util.*;
+
+import javax.swing.*;
 
 public class Main {
 
@@ -39,7 +40,16 @@ public class Main {
         //testGetUserInput();
         testPlayGame();
         //testUnderThreat();
-
+        //testAIThreadSample();
+        //testAIThreadNotNull();
+        //testSampleThread();
+        //testSampleJoinedThread();
+        //testSampleAIJoinedThread();
+        //testEmptyBoard();
+        //testGetAIMoveMT();
+        //testGetAIMoveMTSample();
+        //testChar();
+        //testJFrame();
     }
 
     public static void testBishopTheoretic() {
@@ -1464,7 +1474,7 @@ public class Main {
 
     }
 
-    public static void testGetAIMoveNewBoard() {
+    public static int testGetAIMoveNewBoard() {
 
         Board new_board = new Board();
 
@@ -1537,6 +1547,8 @@ public class Main {
         System.out.println(all_legal_moves2 + "len: " + all_legal_moves2.size());
 
          */
+
+        return 1;
 
     }
 
@@ -2127,7 +2139,6 @@ public class Main {
 
     }
 
-
     public static void setupMove(Board input_board, int start_x, int start_y, int dest_x, int dest_y) {
         List<List<Integer>> move_positions = new ArrayList<>(2);
         List<Integer> start_pos = new ArrayList<>(2);
@@ -2148,6 +2159,168 @@ public class Main {
         input_board.remove(remove_pos);
     }
 
+
+    public static void testAIThreadSample() {
+
+        // creating objects t1 of MyThread
+        List<Integer> test_list = new ArrayList<>(1);
+        AIThreadSample t1 = new AIThreadSample(test_list);
+
+        int x = 0;
+        while (x < 999999) {
+            x++;
+        }
+        t1.t.interrupt();
+
+        while (x < 9999999) {
+            x++;
+        }
+        System.out.println("Main thread: Input List: ");
+        System.out.println(test_list);
+
+
+        System.out.println("Exiting the main Thread");
+
+        // main thread terminates before child thread
+        // - asynchronous:
+        //  - main thread starts
+        //  - child thread started by main thread
+        //   - appends first element into list provided by main thread
+        //  - main thread displays updated list
+        //  - main thread ends
+        //  - child thread appends 2nd element into list provided by main thread
+        //  - child thread ends
+
+    }
+
+    public static void testAIThreadNotNull() {
+
+        // creating objects t1 of MyThread
+        List<Integer> test_list = new ArrayList<>(1);
+        AIThreadSample t1 = new AIThreadSample(test_list);
+
+        while (test_list.size() == 0) {
+        }
+        //t1.t.interrupt();
+        //t1.t.join();
+
+        System.out.println("Main thread: Input List: ");
+        System.out.println(test_list);
+
+
+        System.out.println("Exiting the main Thread");
+
+        // main thread terminates before child thread
+        // - asynchronous:
+        //  - main thread starts
+        //  - child thread started by main thread
+        //   - appends first element into list provided by main thread
+        //  - main thread displays updated list
+        //  - main thread ends
+        //  - child thread appends 2nd element into list provided by main thread
+        //  - child thread ends
+
+    }
+
+    public static void testSampleAIJoinedThread() {
+
+        List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
+        List<List<List<Integer>>> sample_list = new ArrayList<>();
+        List<Thread> started_threads = new ArrayList<>();
+        Board new_board = new Board();
+
+
+        for (int x = 0; x < 5; x++) {
+
+            Board cloned = new_board.cloneBoard();
+            GetAIMoveThread obj = new GetAIMoveThread(3, cloned, sample_list, safe_dest_moves);
+            Thread thread_x = new Thread(obj);
+            thread_x.start();
+            started_threads.add(thread_x);
+
+        }
+
+        while (sample_list.size() < 1) {
+            try
+            {
+                Thread.sleep(100);
+            }
+            catch(Exception ex)
+            {
+            }
+        }
+
+        try
+        {
+            for (int x = 0; x < 5; x++) {
+                started_threads.get(x).interrupt();
+            }
+        }
+        catch(Exception ex)
+        {
+        }
+
+
+
+        System.out.println("This code is outside of the thread");
+        System.out.println(sample_list);
+
+
+
+    }
+
+    public static void testEmptyBoard() {
+
+        Board normal_board = new Board();
+        Board cloned = normal_board.cloneBoard();
+        setupRemove(normal_board, 0, 0 );
+
+        normal_board.displayBoard();
+        cloned.displayBoard();
+
+        for (int x = 0; x < 4; x++) {
+            System.out.println(cloned.getPlayerPieces(x).size());
+        }
+
+
+    }
+
+
+    public static void testGetAIMoveMT() {
+
+        Board new_board = new Board();
+
+        //System.out.println(AI.getAIMoveMT(new_board));
+        AI.getAIMoveMT(new_board);
+
+    }
+
+    public static void testGetAIMoveMTSample() {
+
+        Board new_board = new Board();
+        System.out.println("@ Main");
+        //System.out.println(AI.getAIMoveMTSample(new_board));
+        System.out.println("@ Main after fetched move displayed");
+
+
+    }
+
+    public static void testChar() {
+        //Game game = new Game();
+
+
+    }
+
+    public static void testJFrame() {
+
+        JFrame frame = new JFrame("My First GUI");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300,300);
+        JButton button1 = new JButton("Press");
+        frame.getContentPane().add(button1);
+        frame.setVisible(true);
+
+    }
 
 
 }

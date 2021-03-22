@@ -1,8 +1,8 @@
 package chess_project;
 import chess_project.pieces.*;
 
-import java.lang.reflect.Array;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class AI {
 
@@ -13,7 +13,7 @@ public class AI {
         int max_recursion = 0;
         do {
 
-            System.out.println("calling getAIMoveMaxRecursion with max_recursion = " + max_recursion);
+            //System.out.println("calling getAIMoveMaxRecursion with max_recursion = " + max_recursion);
             fetched_move = getAIMoveMaxRecursion(null, 0, max_recursion, input_board, safe_dest_moves);
             max_recursion++;
         }
@@ -28,12 +28,96 @@ public class AI {
             }
         }
 
-        System.out.println("safe dest moves: " );
-        System.out.println(safe_dest_moves);
+        //System.out.println("safe dest moves: " );
+        //System.out.println(safe_dest_moves);
 
         return fetched_move;
 
     }
+
+
+    public static List<List<Integer>> getAIMoveMT(Board input_board) {
+
+
+        List<Thread> started_threads = new ArrayList<>();
+
+        List<List<Integer>> fetched_move = null;
+        List<List<List<Integer>>> fetched_moves_list = new ArrayList<>();
+        List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
+        //int max_recursion = 0;
+
+        //ReentrantLock lock_fetched_moves_list = new ReentrantLock();
+
+
+        for (int max_recursion = 0; max_recursion < 6; max_recursion++) {
+
+            Board cloned = input_board.cloneBoard();
+            GetAIMoveThread obj = new GetAIMoveThread(max_recursion, cloned, fetched_moves_list, safe_dest_moves);
+            Thread thread_x = new Thread(obj);
+            thread_x.start();
+            started_threads.add(thread_x);
+
+        }
+
+        int current_unjoined_thread = 0;
+
+        for (int x = 0; x < 6; x++) {
+            System.out.println("AI joining thread " + x + "/5");
+            try {
+                started_threads.get(x).join();
+                current_unjoined_thread = x + 1;
+            }
+            catch (Exception ex) {
+            }
+            if (fetched_moves_list.size() != 0) {
+                break;
+            }
+        }
+
+        try
+        {
+            for (int x = current_unjoined_thread; x < 6; x++) {
+                System.out.println("AI interrupting thread " + x + "/5");
+                started_threads.get(x).interrupt();
+            }
+        }
+        catch(Exception ex)
+        {
+        }
+
+
+        if (fetched_moves_list.size() != 0) {
+            fetched_move = fetched_moves_list.get(0);
+        }
+
+        else {
+            if (safe_dest_moves.size() != 0) {
+                fetched_move = safe_dest_moves.get(0);
+            }
+            else {
+                fetched_move = input_board.getAllLegalMoves(1).get(0);
+            }
+        }
+
+        //System.out.println("Reached return fetched_move");
+
+
+        //System.out.println("safe dest moves: " );
+        //System.out.println(safe_dest_moves);
+
+        return fetched_move;
+
+    }
+
+    public static synchronized void addToFetchedMovesList (List<List<List<Integer>>> input_list, List<List<Integer>> fetched_move) {
+        input_list.add(fetched_move);
+    }
+
+    public static synchronized  void addToSafeDestMoves (List<List<List<Integer>>> input_list, List<List<Integer>> safe_dest_move) {
+        input_list.add(safe_dest_move);
+    }
+
+
 
     // TEMPORARILY PUBLIC, set back to PRIVATE LATER
     public static List<List<Integer>> getAIMoveMaxRecursion(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board, List<List<List<Integer>>> safe_dest_moves) {
@@ -43,19 +127,27 @@ public class AI {
             // make mock move with static ai method in ai class
             // returns a ReverseMove object
 
+            // *** CHANGED TO UNDERTHREAT FROM NONPAWNUNDERTHREAT
+            int start_under_threat = input_board.underThreat(move.get(0).get(0), move.get(0).get(1));
             // *
-            int start_under_threat = input_board.nonPawnUnderThreat(move.get(0).get(0), move.get(0).get(1));
+            //int is_pawn = (input_board.getBoard().get(move.get(0).get(0)).get(move.get(0).get(1)).getCharacter() == "pa") ? 1 : 0;
+            //int is_first_ten = (input_board.getTurnNumber() < 11) ? 1 : 0;
+            // *
+            //int first_ten_start_pawn = (is_pawn == 1 && is_first_ten == 1) ? 1 : 0;
 
             ReverseMove reverse_move = aIMockMove(move, input_board);
 
-            int dest_under_threat = input_board.nonPawnUnderThreat(move.get(1).get(0), move.get(1).get(1));
+            // *** CHANGED TO UNDERTHREAT FROM NONPAWNUNDERTHREAT
+            int dest_under_threat = input_board.underThreat(move.get(1).get(0), move.get(1).get(1));
 
-            if (root_move == null && dest_under_threat == 0) {
-                safe_dest_moves.add(move);
+            // *** added mutex
+            if (root_move == null && dest_under_threat == 0 && safe_dest_moves.size() == 0) {
+                //safe_dest_moves.add(move);
+                addToSafeDestMoves(safe_dest_moves, move);
             }
 
             // *
-            if ( (start_under_threat == 1 && dest_under_threat == 0) || (dest_under_threat == 0 && input_board.inCheck(0) == 1)) {
+            if ( ( start_under_threat == 1 && dest_under_threat == 0) || (dest_under_threat == 0 && input_board.inCheck(0) == 1)) {
                 //System.out.println(move.get(1));
                 //System.out.println(input_board.getAllLegalMoves(0));
                 aiReverseMockMove(reverse_move, input_board);
