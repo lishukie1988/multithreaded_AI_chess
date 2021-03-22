@@ -40,7 +40,6 @@ public class Main {
         //testGetUserInput();
         testPlayGame();
         //testUnderThreat();
-        //testAIThreadSample();
         //testAIThreadNotNull();
         //testSampleThread();
         //testSampleJoinedThread();
@@ -2159,68 +2158,6 @@ public class Main {
         input_board.remove(remove_pos);
     }
 
-
-    public static void testAIThreadSample() {
-
-        // creating objects t1 of MyThread
-        List<Integer> test_list = new ArrayList<>(1);
-        AIThreadSample t1 = new AIThreadSample(test_list);
-
-        int x = 0;
-        while (x < 999999) {
-            x++;
-        }
-        t1.t.interrupt();
-
-        while (x < 9999999) {
-            x++;
-        }
-        System.out.println("Main thread: Input List: ");
-        System.out.println(test_list);
-
-
-        System.out.println("Exiting the main Thread");
-
-        // main thread terminates before child thread
-        // - asynchronous:
-        //  - main thread starts
-        //  - child thread started by main thread
-        //   - appends first element into list provided by main thread
-        //  - main thread displays updated list
-        //  - main thread ends
-        //  - child thread appends 2nd element into list provided by main thread
-        //  - child thread ends
-
-    }
-
-    public static void testAIThreadNotNull() {
-
-        // creating objects t1 of MyThread
-        List<Integer> test_list = new ArrayList<>(1);
-        AIThreadSample t1 = new AIThreadSample(test_list);
-
-        while (test_list.size() == 0) {
-        }
-        //t1.t.interrupt();
-        //t1.t.join();
-
-        System.out.println("Main thread: Input List: ");
-        System.out.println(test_list);
-
-
-        System.out.println("Exiting the main Thread");
-
-        // main thread terminates before child thread
-        // - asynchronous:
-        //  - main thread starts
-        //  - child thread started by main thread
-        //   - appends first element into list provided by main thread
-        //  - main thread displays updated list
-        //  - main thread ends
-        //  - child thread appends 2nd element into list provided by main thread
-        //  - child thread ends
-
-    }
 
     public static void testSampleAIJoinedThread() {
 
