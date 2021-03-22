@@ -7,8 +7,11 @@
     
 
 - How to run the game:
-    - 1) please have Java installed in your system
-    - 2) in a terminal window, run the "chess.jar" file in the same directory as this README file using the following command: "java -jar chess.jar"
+    - alternative 1:
+      - please have Java installed on your system 
+      - in a terminal window, run the "chess.jar" file in the same directory as this README file using the following command: "java -jar chess.jar"
+    - alternative 2:
+      - using a Java IDE, run the main function inside Main.java
     
 
 - How to play the game:
