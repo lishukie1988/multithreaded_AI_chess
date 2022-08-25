@@ -8,6 +8,10 @@ import javax.swing.*;
 public class Main {
 
     public static void main(String[] arg) {
+
+        testPlayGame();
+
+        //testIdenticalBoards();
         //testBishopTheoretic();
         //testKnightTheoretic();
         //testQueenTheoretic();
@@ -38,7 +42,6 @@ public class Main {
         //testGetAIMoveOnePawn();
         //testGetAIMoveOnlyKing();
         //testGetUserInput();
-        testPlayGame();
         //testUnderThreat();
         //testAIThreadNotNull();
         //testSampleThread();
@@ -49,6 +52,13 @@ public class Main {
         //testGetAIMoveMTSample();
         //testChar();
         //testJFrame();
+    }
+
+    public static void testIdenticalBoards() {
+        Board a = new Board();
+        Board b = new Board();
+        System.out.println(BoardStates.ai_identical_boards(a,b));
+
     }
 
     public static void testBishopTheoretic() {
@@ -70,6 +80,9 @@ public class Main {
 
         List<List<List<Integer>>> theoretic_moves = new_board.getBoard().get(3).get(3).getTheoreticMoves(new_board);
         System.out.println(theoretic_moves + "len: " + theoretic_moves.size());
+
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
 
     }
 
@@ -97,6 +110,9 @@ public class Main {
         System.out.println("Knigt @ (6,7): ");
         List<List<List<Integer>>> theoretic_moves2 = new_board.getBoard().get(6).get(7).getTheoreticMoves(new_board);
         System.out.println(theoretic_moves2 + "len: " + theoretic_moves2.size());
+
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
     }
 
     public static void testQueenTheoretic() {
@@ -118,6 +134,9 @@ public class Main {
 
         List<List<List<Integer>>> theoretic_moves = new_board.getBoard().get(3).get(3).getTheoreticMoves(new_board);
         System.out.println(theoretic_moves + "len: " + theoretic_moves.size());
+
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
     }
 
     public static void testRookTheoretic() {
@@ -141,6 +160,9 @@ public class Main {
         System.out.println(theoretic_moves + "len: " + theoretic_moves.size());
         int rook_moved = ((Rook) new_board.getBoard().get(3).get(3)).getMoved();
         System.out.println("moved rook.moved = " + rook_moved);
+
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
     }
 
     public static void testPawnTheoretic() {
@@ -217,6 +239,9 @@ public class Main {
         List<List<List<Integer>>> theoretic_moves11 = new_board.getBoard().get(6).get(6).getTheoreticMoves(new_board);
         System.out.println(theoretic_moves11 + "len: " + theoretic_moves11.size());
 
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
+
     }
 
     public static void testKingTheoretic() {
@@ -263,6 +288,9 @@ public class Main {
         //System.out.println("King @ (7,2): ");
         //List<List<List<Integer>>> theoretic_moves1 = new_board.getBoard().get(7).get(2).getTheoreticMoves(new_board);
         //System.out.println(theoretic_moves1 + "len: " + theoretic_moves1.size());
+
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
     }
 
     public static void testBishopLegal() {
@@ -289,6 +317,9 @@ public class Main {
         List<List<List<Integer>>> legal_moves3 = new_board.getBoard().get(4).get(6).getLegalMoves(new_board);
         System.out.println("legal moves: " + legal_moves3 + "len: " + legal_moves3.size());
 
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
+
     }
 
     public static void testKnightLegal() {
@@ -313,6 +344,9 @@ public class Main {
         List<List<List<Integer>>> legal_moves3 = new_board.getBoard().get(1).get(7).getLegalMoves(new_board);
         System.out.println("legal moves: " + legal_moves3 + "len: " + legal_moves3.size());
 
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
+
     }
 
     public static void testQueenLegal() {
@@ -336,6 +370,9 @@ public class Main {
         System.out.println("Pawn @ (5,6): ");
         List<List<List<Integer>>> legal_moves2 = new_board.getBoard().get(5).get(6).getLegalMoves(new_board);
         System.out.println("legal moves: " + legal_moves2 + "len: " + legal_moves2.size());
+
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
 
     }
 
@@ -369,6 +406,9 @@ public class Main {
         System.out.println("Knight @ (1,0): ");
         List<List<List<Integer>>> legal_moves4 = new_board.getBoard().get(1).get(0).getLegalMoves(new_board);
         System.out.println("legal moves: " + legal_moves4 + "len: " + legal_moves4.size());
+
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
 
     }
 
@@ -463,6 +503,9 @@ public class Main {
         List<List<List<Integer>>> theoretic_moves11 = new_board.getBoard().get(6).get(6).getLegalMoves(new_board);
         System.out.println(theoretic_moves11 + "len: " + theoretic_moves11.size());
 
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
+
 
     }
 
@@ -521,6 +564,9 @@ public class Main {
         //System.out.println("King @ (7,2): ");
         //List<List<List<Integer>>> theoretic_moves1 = new_board.getBoard().get(7).get(2).getTheoreticMoves(new_board);
         //System.out.println(theoretic_moves1 + "len: " + theoretic_moves1.size());
+
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
 
 
     }
@@ -601,6 +647,8 @@ public class Main {
         //List<List<List<Integer>>> theoretic_moves1 = new_board.getBoard().get(7).get(2).getTheoreticMoves(new_board);
         //System.out.println(theoretic_moves1 + "len: " + theoretic_moves1.size());
 
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
 
     }
 
@@ -681,7 +729,8 @@ public class Main {
         //List<List<List<Integer>>> theoretic_moves1 = new_board.getBoard().get(7).get(2).getTheoreticMoves(new_board);
         //System.out.println(theoretic_moves1 + "len: " + theoretic_moves1.size());
 
-
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
     }
 
     public static void testPassantMove() {
@@ -786,6 +835,8 @@ public class Main {
 
         System.out.println("white: " + new_board.getPlayerPieces(0).size());
         System.out.println("black: " + new_board.getPlayerPieces(1).size());
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
 
     }
 
@@ -892,6 +943,8 @@ public class Main {
         System.out.println("white: " + new_board.getPlayerPieces(0).size());
         System.out.println("black: " + new_board.getPlayerPieces(1).size());
 
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
     }
 
     public static void testPromotionMove() {
@@ -995,6 +1048,9 @@ public class Main {
             }
         }
         System.out.println(new_board.getPlayerPieces(0).size());
+
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
 
     }
 
@@ -1100,6 +1156,8 @@ public class Main {
         }
         System.out.println(new_board.getPlayerPieces(0).size());
 
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
     }
 
     public static void testTwoSquareMove() {
@@ -1206,6 +1264,9 @@ public class Main {
         System.out.println(new_board.getBoard().get(4).get(3).getPosition());
         System.out.println(((Pawn) new_board.getBoard().get(4).get(3)).getSpecialTurnNumber());
         System.out.println(((Pawn) new_board.getBoard().get(4).get(3)).getMoved());
+
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
     }
 
     public static void testMakeMoveTwoSquare() {
@@ -1316,6 +1377,9 @@ public class Main {
         System.out.println(new_board.getBoard().get(4).get(3).getPosition());
         System.out.println(((Pawn) new_board.getBoard().get(4).get(3)).getSpecialTurnNumber());
         System.out.println(((Pawn) new_board.getBoard().get(4).get(3)).getMoved());
+
+        Board board_2 = new Board();
+        System.out.println(BoardStates.ai_identical_boards(new_board, board_2));
     }
 
     public static void testGetAllLegalMoves() {
