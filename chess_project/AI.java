@@ -8,13 +8,17 @@ public class AI {
 
     public static List<List<Integer>> getAIMove(Board input_board) {
 
+        Board cloned_board = input_board.cloneBoard();
+        List<Board> traversed_list = new ArrayList<>();
+        traversed_list.add(cloned_board);
+
         List<List<Integer>> fetched_move = null;
         List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
         int max_recursion = 0;
         do {
 
             //System.out.println("calling getAIMoveMaxRecursion with max_recursion = " + max_recursion);
-            fetched_move = getAIMoveMaxRecursion(null, 0, max_recursion, input_board, safe_dest_moves);
+            fetched_move = getAIMoveMaxRecursion(null, 0, max_recursion, input_board, safe_dest_moves, traversed_list);
             max_recursion++;
         }
         while (max_recursion < 8 && fetched_move == null);
@@ -38,6 +42,7 @@ public class AI {
 
     public static List<List<Integer>> getAIMoveMT(Board input_board) {
 
+        System.out.println("starting getAIMoveMT");
 
         List<Thread> started_threads = new ArrayList<>();
 
@@ -51,25 +56,32 @@ public class AI {
 
         for (int max_recursion = 0; max_recursion < 6; max_recursion++) {
 
+            System.out.println("before starting thread" + max_recursion);
             Board cloned = input_board.cloneBoard();
             GetAIMoveThread obj = new GetAIMoveThread(max_recursion, cloned, fetched_moves_list, safe_dest_moves);
             Thread thread_x = new Thread(obj);
             thread_x.start();
             started_threads.add(thread_x);
+            System.out.println("finished starting thread" + max_recursion);
 
         }
+
+        System.out.println("finished starting all threads");
 
         int current_unjoined_thread = 0;
 
         for (int x = 0; x < 6; x++) {
-            System.out.println("AI joining thread " + x + "/5");
             try {
+                System.out.println("before joining thread " + x + "/5");
                 started_threads.get(x).join();
+                System.out.println("after joining thread " + x + "/5");
                 current_unjoined_thread = x + 1;
             }
             catch (Exception ex) {
+                System.out.println("problem joining thread " + x);
             }
             if (fetched_moves_list.size() != 0) {
+                System.out.println("move fetched, breaking join loop");
                 break;
             }
         }
@@ -77,8 +89,9 @@ public class AI {
         try
         {
             for (int x = current_unjoined_thread; x < 6; x++) {
-                System.out.println("AI interrupting thread " + x + "/5");
+                System.out.println("before interrupting thread " + x + "/5");
                 started_threads.get(x).interrupt();
+                System.out.println("after interrupting thread " + x + "/5");
             }
         }
         catch(Exception ex)
@@ -105,6 +118,7 @@ public class AI {
         //System.out.println("safe dest moves: " );
         //System.out.println(safe_dest_moves);
 
+        System.out.println("*** before returning fetched move");
         return fetched_move;
 
     }
@@ -120,7 +134,7 @@ public class AI {
 
 
     // TEMPORARILY PUBLIC, set back to PRIVATE LATER
-    public static List<List<Integer>> getAIMoveMaxRecursion(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board, List<List<List<Integer>>> safe_dest_moves) {
+    public static List<List<Integer>> getAIMoveMaxRecursion(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board, List<List<List<Integer>>> safe_dest_moves, List<Board> traversed_boards) {
         //System.out.println("current recursion depth: " + current_recursion);
 
         // retrieve all legal moves for black (AI) based on current board state
@@ -143,6 +157,29 @@ public class AI {
 
             // make hypothetical move while storing the reciprocating move to reverse the board to it's original state later on
             ReverseMove reverse_move = aIMockMove(move, input_board);
+
+            int traversed = 0;
+
+
+            // *** test delete foor loop
+            for (Board board : traversed_boards) {
+                if (BoardStates.ai_identical_boards(board, input_board) == 1){
+                    aiReverseMockMove(reverse_move, input_board);
+                    traversed = 1;
+                    break;
+                }
+            }
+
+            if (traversed == 1) {
+                continue;
+            }
+
+            // *** test clone + append
+            Board clone_traversed = input_board.cloneBoard();
+            traversed_boards.add(clone_traversed);
+
+            System.out.println(traversed_boards.size());
+            //System.out.println("after append traversed");
 
             // *** CHANGED TO UNDERTHREAT FROM NONPAWNUNDERTHREAT
 
@@ -194,19 +231,28 @@ public class AI {
 
                 // repeat this function call with this current move
 
+                System.out.println("before recursion call");
+                System.out.println(current_recursion);
+
                 List<List<Integer>> fetched_move;
                 if (root_move == null) {
-                    fetched_move = getAIMoveMaxRecursion(move, current_recursion + 1, max_recursion, input_board, safe_dest_moves);
+                    fetched_move = getAIMoveMaxRecursion(move, current_recursion + 1, max_recursion, input_board, safe_dest_moves, traversed_boards);
                 } else {
-                    fetched_move = getAIMoveMaxRecursion(root_move, current_recursion + 1, max_recursion, input_board, safe_dest_moves);
+                    fetched_move = getAIMoveMaxRecursion(root_move, current_recursion + 1, max_recursion, input_board, safe_dest_moves, traversed_boards);
                 }
 
+                //System.out.println("after recursion call");
+                //System.out.println(fetched_move);
+                //System.out.println(current_recursion);
                 aiReverseMockMove(reverse_move, input_board);
+
+                //System.out.println("after reverse move 2");
 
                 // if recursive fct call with this move results in a non-null base case move
                 if (fetched_move != null) {
                     //System.out.println("move number: " + (current_recursion + 1));
                     //System.out.println(move);
+                    //System.out.println("before return fetched");
                     return fetched_move; // == root_move
                 }
 
@@ -217,6 +263,8 @@ public class AI {
                 // restore board state & loop to next legal move in list of retrieved legal moves
                 aiReverseMockMove(reverse_move, input_board);
             }
+
+            // System.out.println("end of move iteration: " + legal_moves.indexOf(move) +"/" + legal_moves.size());
         }
 
         // * base case 2: if no in-check resulting root move is found within provided max recursion level

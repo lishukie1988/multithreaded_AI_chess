@@ -14,6 +14,7 @@ public class GetAIMoveThread implements Runnable {
     private List<List<List<Integer>>> fetched_moves_list;
     private List<List<List<Integer>>> safe_dest_moves;
     private int max_recursion;
+    private int thread_number;
 
 
     public GetAIMoveThread(int input_max_recursion, Board input_board, List<List<List<Integer>>> fetched_moves_list, List<List<List<Integer>>> safe_dest_moves) {
@@ -21,6 +22,7 @@ public class GetAIMoveThread implements Runnable {
         this.fetched_moves_list = fetched_moves_list;
         this.max_recursion = input_max_recursion;
         this.safe_dest_moves = safe_dest_moves;
+        this.thread_number = max_recursion;
 
     }
 
@@ -40,7 +42,13 @@ public class GetAIMoveThread implements Runnable {
         while (!Thread.interrupted()) {
             //System.out.println("This code is running in a thread");
 
-            List<List<Integer>> fetched_move = AI.getAIMoveMaxRecursion(null, 0, this.max_recursion, this.test_board, this.safe_dest_moves);
+            Board traversed_root = this.test_board.cloneBoard();
+            List<Board> traversed_boards = new ArrayList<>();
+            traversed_boards.add(traversed_root);
+
+            List<List<Integer>> fetched_move = AI.getAIMoveMaxRecursion(null, 0, this.max_recursion, this.test_board, this.safe_dest_moves, traversed_boards);
+            //System.out.println("finished AI.getAIMoveMaxRecursion");
+            //System.out.println(fetched_move);
             if (fetched_move != null) {
                 //System.out.println("Inside thread, finishedcalling getAIMoveRecursion, fetched move: ");
                 //System.out.println(fetched_move);
@@ -49,16 +57,19 @@ public class GetAIMoveThread implements Runnable {
                 //test_list.add(fetched_move);
                 // ****** mutex protected (synchronized) list appending
                 AI.addToFetchedMovesList(this.fetched_moves_list, fetched_move);
+                //System.out.println("thread appended to fetched_moves_list");
 
             }
 
             //test_list.add(AI.getAIMoveMaxRecursion(null, 0, this.test_int, this.test_board, this.safe_dest_moves));
             //System.out.println("thread finished, exiting");
+            //System.out.println("before breaking infinite while loop");
             break;
             //List<List<Integer>> fetched_move = AI.getAIMoveMaxRecursion(null, 0, this.test_int, this.test_board, this.safe_dest_moves);
             //this.test_list.add(fetched_move);
         }
 
+        //System.out.println("end of thread " + this.max_recursion + " run function");
     }
 
 

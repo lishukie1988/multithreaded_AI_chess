@@ -98,7 +98,11 @@ public class Game {
         }
         else { // if AI (black)
             System.out.println("Black is coming up with a move, please wait!");
+            long start = System.currentTimeMillis();
             chosen_move = AI.getAIMoveMT(this.chess_board);
+            long finish = System.currentTimeMillis();
+            long timeElapsed = finish - start;
+            System.out.println("time elapse: " + timeElapsed);
             //chosen_move = AI.getAIMoveMT(this.chess_board);
         }
 

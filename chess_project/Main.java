@@ -1540,6 +1540,9 @@ public class Main {
     public static int testGetAIMoveNewBoard() {
 
         Board new_board = new Board();
+        Board cloned_board = new_board.cloneBoard();
+        List<Board> traversed_list = new ArrayList<>();
+        traversed_list.add(cloned_board);
 
 
         new_board.displayBoard();
@@ -1561,7 +1564,7 @@ public class Main {
         System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
 
         List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
-        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves);
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves, traversed_list);
 
         System.out.println("fetched ai move with max recursion depth = 0: ");
         System.out.println(fetched_ai_move);
@@ -1620,6 +1623,10 @@ public class Main {
 
         Board new_board = new Board();
 
+        Board cloned_board = new_board.cloneBoard();
+        List<Board> traversed_list = new ArrayList<>();
+        traversed_list.add(cloned_board);
+
 
         setupRemove(new_board,1,7);
         setupRemove(new_board,6,7);
@@ -1643,7 +1650,7 @@ public class Main {
         System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
 
         List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
-        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves);
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves, traversed_list);
 
         System.out.println("fetched ai move with max recursion depth = 0: ");
         System.out.println(fetched_ai_move);
@@ -1703,6 +1710,9 @@ public class Main {
 
         Board new_board = new Board();
 
+        Board cloned_board = new_board.cloneBoard();
+        List<Board> traversed_list = new ArrayList<>();
+        traversed_list.add(cloned_board);
 
         setupRemove(new_board,1,7);
         setupRemove(new_board,6,7);
@@ -1730,7 +1740,7 @@ public class Main {
 
 
         List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
-        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves);
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves, traversed_list);
 
         System.out.println("fetched ai move with max recursion depth = 0: ");
         System.out.println(fetched_ai_move);
@@ -1790,6 +1800,9 @@ public class Main {
 
         Board new_board = new Board();
 
+        Board cloned_board = new_board.cloneBoard();
+        List<Board> traversed_list = new ArrayList<>();
+        traversed_list.add(cloned_board);
 
         setupRemove(new_board,1,7);
         setupRemove(new_board,2,7);
@@ -1819,7 +1832,7 @@ public class Main {
 
 
         List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
-        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves);
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves, traversed_list);
 
         System.out.println("fetched ai move with max recursion depth = 0: ");
         System.out.println(fetched_ai_move);
@@ -1878,6 +1891,9 @@ public class Main {
     public static void testGetAIMoveOnePawn() {
 
         Board new_board = new Board();
+        Board cloned_board = new_board.cloneBoard();
+        List<Board> traversed_list = new ArrayList<>();
+        traversed_list.add(cloned_board);
 
 
         setupRemove(new_board,1,7);
@@ -1920,7 +1936,7 @@ public class Main {
         System.out.println(all_legal_moves + "len: " + all_legal_moves.size());
 
         List<List<List<Integer>>> safe_dest_moves = new ArrayList<>();
-        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves);
+        List<List<Integer>> fetched_ai_move = AI.getAIMoveMaxRecursion(null, 0, 0, new_board, safe_dest_moves, traversed_list);
 
         System.out.println("fetched ai move with max recursion depth = 0: ");
         System.out.println(fetched_ai_move);
