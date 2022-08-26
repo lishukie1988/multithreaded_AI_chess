@@ -11,15 +11,15 @@ public class GetAIMoveThread implements Runnable {
 
     //private int test_int = 0;
     private Board test_board;
-    private List<List<List<Integer>>> test_list;
+    private List<List<List<Integer>>> fetched_moves_list;
     private List<List<List<Integer>>> safe_dest_moves;
-    private int test_int;
+    private int max_recursion;
 
 
-    public GetAIMoveThread(int input_max_recursion, Board input_board, List<List<List<Integer>>> input_list, List<List<List<Integer>>> safe_dest_moves) {
+    public GetAIMoveThread(int input_max_recursion, Board input_board, List<List<List<Integer>>> fetched_moves_list, List<List<List<Integer>>> safe_dest_moves) {
         this.test_board = input_board;
-        this.test_list = input_list;
-        this.test_int = input_max_recursion;
+        this.fetched_moves_list = fetched_moves_list;
+        this.max_recursion = input_max_recursion;
         this.safe_dest_moves = safe_dest_moves;
 
     }
@@ -40,7 +40,7 @@ public class GetAIMoveThread implements Runnable {
         while (!Thread.interrupted()) {
             //System.out.println("This code is running in a thread");
 
-            List<List<Integer>> fetched_move = AI.getAIMoveMaxRecursion(null, 0, this.test_int, this.test_board, this.safe_dest_moves);
+            List<List<Integer>> fetched_move = AI.getAIMoveMaxRecursion(null, 0, this.max_recursion, this.test_board, this.safe_dest_moves);
             if (fetched_move != null) {
                 //System.out.println("Inside thread, finishedcalling getAIMoveRecursion, fetched move: ");
                 //System.out.println(fetched_move);
@@ -48,7 +48,7 @@ public class GetAIMoveThread implements Runnable {
                 // ****** commented out for now to test mutex
                 //test_list.add(fetched_move);
                 // ****** mutex protected (synchronized) list appending
-                AI.addToFetchedMovesList(this.test_list, fetched_move);
+                AI.addToFetchedMovesList(this.fetched_moves_list, fetched_move);
 
             }
 

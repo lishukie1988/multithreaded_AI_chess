@@ -122,12 +122,18 @@ public class AI {
     // TEMPORARILY PUBLIC, set back to PRIVATE LATER
     public static List<List<Integer>> getAIMoveMaxRecursion(List<List<Integer>> root_move, int current_recursion, int max_recursion, Board input_board, List<List<List<Integer>>> safe_dest_moves) {
         //System.out.println("current recursion depth: " + current_recursion);
+
+        // retrieve all legal moves for black (AI) based on current board state
         List<List<List<Integer>>> legal_moves = input_board.getAllLegalMoves(1);
+
+        // loop over each of the retrieved legal moves
         for (List<List<Integer>> move : legal_moves) {
             // make mock move with static ai method in ai class
             // returns a ReverseMove object
 
             // *** CHANGED TO UNDERTHREAT FROM NONPAWNUNDERTHREAT
+
+            // check whether the start pos of the piece assoc with this move is already under threat
             int start_under_threat = input_board.underThreat(move.get(0).get(0), move.get(0).get(1));
             // *
             //int is_pawn = (input_board.getBoard().get(move.get(0).get(0)).get(move.get(0).get(1)).getCharacter() == "pa") ? 1 : 0;
@@ -135,24 +141,38 @@ public class AI {
             // *
             //int first_ten_start_pawn = (is_pawn == 1 && is_first_ten == 1) ? 1 : 0;
 
+            // make hypothetical move while storing the reciprocating move to reverse the board to it's original state later on
             ReverseMove reverse_move = aIMockMove(move, input_board);
 
             // *** CHANGED TO UNDERTHREAT FROM NONPAWNUNDERTHREAT
+
+            // check whether the dest pos of the piece assoc with this move will become under threat
             int dest_under_threat = input_board.underThreat(move.get(1).get(0), move.get(1).get(1));
 
             // *** added mutex
+            // if this hyp move is the 1st of the chain of hyp moves && dest of piece of this hyp move is safe
+            // && there has so far been no moves where dest of piece is safe
             if (root_move == null && dest_under_threat == 0 && safe_dest_moves.size() == 0) {
                 //safe_dest_moves.add(move);
+                // add this hyp move to the list of possible moves where dest of piece is safe
+                // safe_dest_moves:
+                // - list (used bc of mutability) of 1 root move that doesn't put assoc piece into a dest pos that's under threat
+                // - mutable, accessed by multiple threads at the same time each running this fct with a different input max recursion depth, hench the use of MUTEX
+                // - could be used as fallback root move by getAIMoveMT if no base case hyp move is discovered to be reachable by any root moves within input recursion limit carried out by the multiple fcts run by multiple threads
                 addToSafeDestMoves(safe_dest_moves, move);
             }
 
-            // *
+            // * base case 1: hyp move which leads to 1 of the following situations
+            // if start pos of piece of current hyp move is under threat & dest pos of piece of current hyp move doesn't put piece under threat @ dest pos
+            // or
+            // if dest pos of piece of current hyp move doesn't put piece under threat & puts opponent (human) in check
             if ( ( start_under_threat == 1 && dest_under_threat == 0) || (dest_under_threat == 0 && input_board.inCheck(0) == 1)) {
                 //System.out.println(move.get(1));
                 //System.out.println(input_board.getAllLegalMoves(0));
                 aiReverseMockMove(reverse_move, input_board);
                 //System.out.println("move number: " + (current_recursion + 1) + " !in check!");
                 //System.out.println(move);
+                // return the root move of the chain of hyp moves this hyp move belongs to
                 if (root_move == null) {
                     return move;
                 } else {
@@ -160,7 +180,8 @@ public class AI {
                 }
             }
 
-            // else if player 0 not in check after current ai mock move
+            // * recursive case
+            // else if dest pos of piece of current move doesn't put piece under threat & max length of hyp move chain not reached
 
             else if (dest_under_threat == 0 && current_recursion < max_recursion) {
                 //input_board.underThreat(move.get(1).get(0), move.get(1).get(1));
@@ -171,6 +192,8 @@ public class AI {
 
                 //System.out.println(move);
 
+                // repeat this function call with this current move
+
                 List<List<Integer>> fetched_move;
                 if (root_move == null) {
                     fetched_move = getAIMoveMaxRecursion(move, current_recursion + 1, max_recursion, input_board, safe_dest_moves);
@@ -180,6 +203,7 @@ public class AI {
 
                 aiReverseMockMove(reverse_move, input_board);
 
+                // if recursive fct call with this move results in a non-null base case move
                 if (fetched_move != null) {
                     //System.out.println("move number: " + (current_recursion + 1));
                     //System.out.println(move);
@@ -187,12 +211,15 @@ public class AI {
                 }
 
                 //} else if (current_recursion == max_recursion) {
+
+                // else if dest pos of this hyp move puts piece under threat
             } else {
+                // restore board state & loop to next legal move in list of retrieved legal moves
                 aiReverseMockMove(reverse_move, input_board);
             }
         }
 
-        // if no in-check resulting root move is found within provided max recursion level
+        // * base case 2: if no in-check resulting root move is found within provided max recursion level
         return null;
 
     }
