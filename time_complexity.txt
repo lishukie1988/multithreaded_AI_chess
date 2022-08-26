@@ -6,39 +6,39 @@
       - m = # of pieces remaining which belong to player
     - Below is the calculation of the time complexity of the function AI.getAIMoveMaxRecursion using aggregate analysis:
 
-    - Time analysis for contained helper functions: 
-      - T(AI.aiReverseMockMove) = T(AI.aiMockNormalMove) = T(AI.aiMockMove) = O(1)
-      - T(Board.getAllLegalMoves) = O(n)
-      - T(Board.underThreat) = O(m) 
+      - Time analysis for contained helper functions: 
+         - T(AI.aiReverseMockMove) = T(AI.aiMockNormalMove) = T(AI.aiMockMove) = O(1)
+         - T(Board.getAllLegalMoves) = O(n)
+         - T(Board.underThreat) = O(m) 
 
-    - Inputs n, m size progression: 
-      - m strictly decreases like DC algorithms, but at a variable rate of either 1 or 0
-      - n stays constant
+      - Inputs n, m size progression: 
+        - m strictly decreases like DC algorithms, but at a variable rate of either 1 or 0
+        - n stays constant
 
-    - Overall time complexity calculation with the above sub-analysis and properties taken into account:
+      - Overall time complexity calculation with the above sub-analysis and properties taken into account:
 
-      - T(n,m) = T(Board.getAllLegalMoves) + T(Board.underThreat) +
-                 T(AI.aiReverseMockMove) + T(AI.aiMockNormalMove) + 
-                 T(AI.aiMockMove) + T(n,m - 1)
+        - T(n,m) = T(Board.getAllLegalMoves) + T(Board.underThreat) +
+                   T(AI.aiReverseMockMove) + T(AI.aiMockNormalMove) + 
+                   T(AI.aiMockMove) + T(n,m - 1)
 
-      - when m > 0:
-        - T(n,m) = O(n) + O(m) + O(1) + O(1) + O(1) + T(n,m - 1) 
-	             = n + m + T(n,m - 1) 
+        - when m > 0:
+           - T(n,m) = O(n) + O(m) + O(1) + O(1) + O(1) + T(n,m - 1) 
+	               = n + m + T(n,m - 1) 
 
-      - when m = 0: (base case: return move that "captures" player's king, the sole piece in this hypothetical base case situation)
-        - T(n,m) = c = O(1)
+        - when m = 0: (base case: return move that "captures" player's king, the sole piece in this hypothetical base case situation)
+          - T(n,m) = c = O(1)
 
-	  - Calculation of closed form time complexity:
-        T(n,m) = n + m + T(n,m - 1)               
-			   = n + m + (n + m-1 + T(n,m - 2))
-			   = 2n + 2m - 1 + T(n, m - 2)	// h = 2 (h = recursion level)
-			   = 2n + 2m - 1 + n + m - 2 + T(n, m - 3)
-			   = 3n + 3m - 3 + T(n, m - 3)         // h = 3
-			   = 3n + 3m - 3 + n + m - 3 + T(n, m - 4)
-			   = 4n + 4m - 6 + T(n, m - 4)         // h = 4
-			   = hn + hm - (h-1)h/2 + T(n, m - h)  // h = h
-			   = m(n+m) - (m-1)m/2 + T(n, 0)       // h = m 
-			   = (2mn + 2m^2 - (m^2 - m))/2        // T(n,0) = c = O(1)
-			   = (2mn + m + m^2)/2
-			   = O(mn + m^2)
-			   = O(m * max(m,n))
+        - Calculation of closed form time complexity:
+      	     T(n,m) = n + m + T(n,m - 1)          
+      	     	    = n + m + (n + m-1 + T(n,m - 2))
+		    = 2n + 2m - 1 + T(n, m - 2)	     // h = 2 (h = recursion level)
+		    = 2n + 2m - 1 + n + m - 2 + T(n, m - 3)
+		    = 3n + 3m - 3 + T(n, m - 3)            // h = 3
+		    = 3n + 3m - 3 + n + m - 3 + T(n, m - 4)
+		    = 4n + 4m - 6 + T(n, m - 4)            // h = 4
+		    = hn + hm - (h-1)h/2 + T(n, m - h)     // h = h
+	            = m(n+m) - (m-1)m/2 + T(n, 0)          // h = m 
+		    = (2mn + 2m^2 - (m^2 - m))/2           // T(n,0) = c = O(1)
+		    = (2mn + m + m^2)/2
+		    = O(mn + m^2)
+	            = O(m * max(m,n))
