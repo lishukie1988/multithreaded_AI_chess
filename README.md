@@ -10,7 +10,7 @@
 - How to run the game:
 
     - alternative 1:
-        - please have Java 16.0.2 or newer installed on your system 
+        - please have Java JDK 16.0.2 or newer installed on your system 
         - in a terminal window, run the "chess.jar" file in the same directory as this README file using the following command: "java -jar chess.jar"
     - alternative 2:
         - using a Java IDE configured with Java 16.0.2, run the main function inside Main.java
