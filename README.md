@@ -6,6 +6,15 @@
         - checkmate & stalemate detection
         - threefold repetition rule
     
+- Demo Screenshots:
+    - Player (white) move 1 selection:
+        - ![Screenshot 2024-04-03 at 2 29 33 PM](https://github.com/lishukie6588/multithreaded_AI_chess/assets/59763257/d849606a-2950-4044-9377-f766dc1937c9)
+    - AI (black) move 1 selection:
+        - ![Screenshot 2024-04-03 at 2 30 01 PM](https://github.com/lishukie6588/multithreaded_AI_chess/assets/59763257/5d09c911-21fe-43d1-bc29-8d02d72473d2)
+    - Player (white) move 2 selection:
+        - ![Screenshot 2024-04-03 at 2 30 47 PM](https://github.com/lishukie6588/multithreaded_AI_chess/assets/59763257/42b16bef-46a9-4a1c-a2d0-e9f9988ceaf7)
+    - AI (black) move 2 selection & Player (white) is in check:
+        - ![Screenshot 2024-04-03 at 2 31 50 PM](https://github.com/lishukie6588/multithreaded_AI_chess/assets/59763257/7e165486-2ba2-4aeb-a19e-eb0ea908c6e9)
 
 - How to run the game:
 
